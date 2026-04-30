@@ -1498,77 +1498,472 @@ CTAI_DATA.planStats = {
 // Lessons content structure for all 11 chapters
 CTAI_DATA.lessonsContent = {
   1: {
-    learningObjectives: [],
+    learningObjectives: [
+      {
+        id: "lo1.1",
+        text: "Describe the AI effect and how it influences the definition of AI.",
+        kLevel: "K2",
+        explanation: "Understand how AI definitions change as technology evolves and human perceptions shift"
+      },
+      {
+        id: "lo1.2",
+        text: "Distinguish between narrow AI, general AI, and super AI.",
+        kLevel: "K2",
+        explanation: "Learn the three categories of AI and their characteristics and current state of development"
+      },
+      {
+        id: "lo1.3",
+        text: "Differentiate between AI-based systems and conventional systems.",
+        kLevel: "K2",
+        explanation: "Understand key differences in how AI-based and conventional systems process data and make decisions"
+      },
+      {
+        id: "lo1.4",
+        text: "Recognize the different technologies used to implement AI.",
+        kLevel: "K1",
+        explanation: "Identify various AI technologies including fuzzy logic, search algorithms, reasoning techniques, and machine learning"
+      },
+      {
+        id: "lo1.5",
+        text: "Identify popular AI development frameworks.",
+        kLevel: "K1",
+        explanation: "Know the names and characteristics of common frameworks like TensorFlow, PyTorch, Keras, and others"
+      },
+      {
+        id: "lo1.6",
+        text: "Compare the choices available for hardware to implement AI-based systems.",
+        kLevel: "K2",
+        explanation: "Understand differences between CPUs, GPUs, and specialized hardware for AI implementation"
+      },
+      {
+        id: "lo1.7",
+        text: "Explain the concept of AI as a Service (AIaaS).",
+        kLevel: "K2",
+        explanation: "Learn how AI services are delivered via cloud platforms and the implications for testing"
+      },
+      {
+        id: "lo1.8",
+        text: "Explain the use of pre-trained AI models and the risks associated with them.",
+        kLevel: "K2",
+        explanation: "Understand benefits and risks of using pre-trained models including bias and performance issues"
+      },
+      {
+        id: "lo1.9",
+        text: "Describe how standards apply to AI-based systems.",
+        kLevel: "K2",
+        explanation: "Learn about standards and regulations that apply to AI systems including GDPR and other frameworks"
+      }
+    ],
     lessonText: "",
     visualSummary: "",
     useCases: "",
     mnemonics: ""
   },
   2: {
-    learningObjectives: [],
+    learningObjectives: [
+      {
+        id: "lo2.1",
+        text: "Explain the importance of flexibility and adaptability as characteristics of AI-based systems.",
+        kLevel: "K2",
+        explanation: "Understand how AI systems must adapt to changing environments and new situations"
+      },
+      {
+        id: "lo2.2",
+        text: "Explain the relationship between autonomy and AI-based systems.",
+        kLevel: "K2",
+        explanation: "Learn about the ability of systems to work independently and the testing implications"
+      },
+      {
+        id: "lo2.3",
+        text: "Explain the importance of managing evolution for AI-based systems.",
+        kLevel: "K2",
+        explanation: "Understand how self-learning systems evolve and the constraints needed to manage this evolution"
+      },
+      {
+        id: "lo2.4",
+        text: "Describe the different causes and types of bias found in AI-based systems.",
+        kLevel: "K2",
+        explanation: "Learn about algorithmic bias, sample bias, and inappropriate bias and their sources"
+      },
+      {
+        id: "lo2.5",
+        text: "Discuss the ethical principles that should be respected in the development, deployment and use of AI-based systems.",
+        kLevel: "K2",
+        explanation: "Understand ethical frameworks like OECD principles for responsible AI development"
+      },
+      {
+        id: "lo2.6",
+        text: "Explain the occurrence of side effects and reward hacking in AI-based systems.",
+        kLevel: "K2",
+        explanation: "Learn how poorly defined goals can lead to unexpected and harmful results in AI systems"
+      },
+      {
+        id: "lo2.7",
+        text: "Explain how transparency, interpretability and explainability apply to AI-based systems.",
+        kLevel: "K2",
+        explanation: "Understand the importance of understanding how AI systems make decisions"
+      },
+      {
+        id: "lo2.8",
+        text: "Recall the characteristics that make it difficult to use AI-based systems in safety-related applications.",
+        kLevel: "K1",
+        explanation: "Know the challenges of deploying AI in safety-critical domains"
+      }
+    ],
     lessonText: "",
     visualSummary: "",
     useCases: "",
     mnemonics: ""
   },
   3: {
-    learningObjectives: [],
+    learningObjectives: [
+      {
+        id: "lo3.1",
+        text: "Describe classification and regression as part of supervised learning.",
+        kLevel: "K2",
+        explanation: "Understand how supervised learning uses labeled data for classification and regression tasks"
+      },
+      {
+        id: "lo3.2",
+        text: "Describe clustering and association as part of unsupervised learning.",
+        kLevel: "K2",
+        explanation: "Learn how unsupervised learning discovers patterns in unlabeled data"
+      },
+      {
+        id: "lo3.3",
+        text: "Describe reinforcement learning.",
+        kLevel: "K2",
+        explanation: "Understand how agents learn through interaction with environments and reward/penalty signals"
+      },
+      {
+        id: "lo3.4",
+        text: "Summarize the workflow used to create an ML system.",
+        kLevel: "K2",
+        explanation: "Learn the steps from problem definition through data preparation, training, and deployment"
+      },
+      {
+        id: "lo3.5",
+        text: "Given a project scenario, identify an appropriate form of ML (from classification, regression, clustering, association, or reinforcement learning).",
+        kLevel: "K3",
+        explanation: "Apply knowledge of ML approaches to solve specific business problems"
+      }
+    ],
     lessonText: "",
     visualSummary: "",
     useCases: "",
     mnemonics: ""
   },
   4: {
-    learningObjectives: [],
+    learningObjectives: [
+      {
+        id: "lo4.1",
+        text: "Describe the activities and challenges related to data preparation.",
+        kLevel: "K2",
+        explanation: "Understand data cleaning, normalization, and transformation challenges in ML workflows"
+      },
+      {
+        id: "lo4.2",
+        text: "Contrast the use of training, validation and test data sets in the development of an ML model.",
+        kLevel: "K2",
+        explanation: "Learn the different roles and purposes of train, validation, and test datasets"
+      },
+      {
+        id: "lo4.3",
+        text: "Describe typical data set quality issues.",
+        kLevel: "K2",
+        explanation: "Understand common data quality problems like duplicates, missing values, and inconsistencies"
+      },
+      {
+        id: "lo4.4",
+        text: "Recognize how poor data quality can cause problems with the resultant ML model.",
+        kLevel: "K2",
+        explanation: "Learn the impact of data quality on model performance and reliability"
+      },
+      {
+        id: "lo4.5",
+        text: "Recall the different approaches to the labelling of data in datasets for supervised learning.",
+        kLevel: "K1",
+        explanation: "Know manual labeling, crowdsourcing, and automated labeling approaches"
+      }
+    ],
     lessonText: "",
     visualSummary: "",
     useCases: "",
     mnemonics: ""
   },
   5: {
-    learningObjectives: [],
+    learningObjectives: [
+      {
+        id: "lo5.1",
+        text: "Calculate the ML functional performance metrics from a given set of confusion matrix data.",
+        kLevel: "K3",
+        explanation: "Apply confusion matrix to calculate accuracy, precision, recall, and F1-score"
+      },
+      {
+        id: "lo5.2",
+        text: "Contrast and compare the concepts behind the ML functional performance metrics for classification, regression and clustering methods.",
+        kLevel: "K2",
+        explanation: "Understand different metrics for different ML problem types"
+      },
+      {
+        id: "lo5.3",
+        text: "Summarize the limitations of using ML functional performance metrics to determine the quality of the ML system.",
+        kLevel: "K2",
+        explanation: "Learn that metrics measure only functionality, not all quality characteristics"
+      },
+      {
+        id: "lo5.4",
+        text: "Select appropriate ML functional performance metrics and/or their values for a given ML model and scenario.",
+        kLevel: "K4",
+        explanation: "Choose and apply appropriate metrics based on specific business requirements and use cases"
+      },
+      {
+        id: "lo5.5",
+        text: "Explain the use of benchmark suites in the context of ML system quality.",
+        kLevel: "K2",
+        explanation: "Understand how industry benchmarks help compare ML technologies and implementations"
+      }
+    ],
     lessonText: "",
     visualSummary: "",
     useCases: "",
     mnemonics: ""
   },
   6: {
-    learningObjectives: [],
+    learningObjectives: [
+      {
+        id: "lo6.1",
+        text: "Explain the structure and function of a neural network including a DNN.",
+        kLevel: "K2",
+        explanation: "Understand how artificial neural networks are structured and how they process information"
+      },
+      {
+        id: "lo6.2",
+        text: "Describe the different coverage measures for neural networks.",
+        kLevel: "K2",
+        explanation: "Learn testing coverage metrics specific to neural networks including neuron and activation coverage"
+      }
+    ],
     lessonText: "",
     visualSummary: "",
     useCases: "",
     mnemonics: ""
   },
   7: {
-    learningObjectives: [],
+    learningObjectives: [
+      {
+        id: "lo7.1",
+        text: "Explain how system specifications for AI-based systems can create challenges in testing.",
+        kLevel: "K2",
+        explanation: "Understand how incomplete or unclear specifications complicate AI system testing"
+      },
+      {
+        id: "lo7.2",
+        text: "Describe how AI-based systems are tested at each test level.",
+        kLevel: "K2",
+        explanation: "Learn testing approaches at unit, integration, system, and acceptance test levels"
+      },
+      {
+        id: "lo7.3",
+        text: "Recall those factors associated with test data that can make testing AI-based systems difficult.",
+        kLevel: "K1",
+        explanation: "Know challenges with test data volume, representativeness, and realistic scenarios"
+      },
+      {
+        id: "lo7.4",
+        text: "Explain automation bias and how this affects testing.",
+        kLevel: "K2",
+        explanation: "Understand tendency to trust automated systems and its testing implications"
+      },
+      {
+        id: "lo7.5",
+        text: "Describe the documentation of an AI component and understand how documentation supports the testing of AI-based systems.",
+        kLevel: "K2",
+        explanation: "Learn what documentation is needed to support effective AI system testing"
+      },
+      {
+        id: "lo7.6",
+        text: "Explain the need for frequently testing the trained model to handle concept drift.",
+        kLevel: "K2",
+        explanation: "Understand how model performance degrades over time and the need for continuous testing"
+      },
+      {
+        id: "lo7.7",
+        text: "For a given scenario determine a test approach to be followed when developing an ML system.",
+        kLevel: "K4",
+        explanation: "Design comprehensive testing strategies for ML development projects"
+      }
+    ],
     lessonText: "",
     visualSummary: "",
     useCases: "",
     mnemonics: ""
   },
   8: {
-    learningObjectives: [],
+    learningObjectives: [
+      {
+        id: "lo8.1",
+        text: "Explain the challenges in testing created by the self-learning of AI-based systems.",
+        kLevel: "K2",
+        explanation: "Understand unpredictability and continuous evolution challenges in self-learning systems"
+      },
+      {
+        id: "lo8.2",
+        text: "Describe how autonomous AI-based systems are tested.",
+        kLevel: "K2",
+        explanation: "Learn testing strategies specific to systems operating independently"
+      },
+      {
+        id: "lo8.3",
+        text: "Explain how to test for bias in an AI-based system.",
+        kLevel: "K2",
+        explanation: "Understand approaches to detecting and testing for bias in AI models"
+      },
+      {
+        id: "lo8.4",
+        text: "Explain the challenges in testing created by the probabilistic and non-deterministic nature of AI-based systems.",
+        kLevel: "K2",
+        explanation: "Learn testing complexities arising from non-deterministic AI behavior"
+      },
+      {
+        id: "lo8.5",
+        text: "Explain the challenges in testing created by the complexity of AI-based systems.",
+        kLevel: "K2",
+        explanation: "Understand testing difficulties from system complexity and opacity"
+      },
+      {
+        id: "lo8.6",
+        text: "Describe how the transparency, interpretability and explainability of AI-based systems can be tested.",
+        kLevel: "K2",
+        explanation: "Learn how to verify and test AI system explanability and transparency"
+      },
+      {
+        id: "lo8.7",
+        text: "Explain the challenges in creating test oracles resulting from the specific characteristics of AI-based systems.",
+        kLevel: "K2",
+        explanation: "Understand the test oracle problem in AI testing"
+      },
+      {
+        id: "lo8.8",
+        text: "Select appropriate test objectives and acceptance criteria for the AI-specific quality characteristics of a given AI-based system.",
+        kLevel: "K4",
+        explanation: "Define quality objectives and acceptance criteria appropriate for AI system characteristics"
+      }
+    ],
     lessonText: "",
     visualSummary: "",
     useCases: "",
     mnemonics: ""
   },
   9: {
-    learningObjectives: [],
+    learningObjectives: [
+      {
+        id: "lo9.1",
+        text: "Explain how the testing of ML systems can help prevent adversarial attacks and data poisoning.",
+        kLevel: "K2",
+        explanation: "Understand security testing approaches for ML systems"
+      },
+      {
+        id: "lo9.2",
+        text: "Explain how pairwise testing is used for AI-based systems.",
+        kLevel: "K2",
+        explanation: "Learn combinatorial testing techniques adapted for AI systems"
+      },
+      {
+        id: "lo9.3",
+        text: "Explain how back-to-back testing is used for AI-based systems.",
+        kLevel: "K2",
+        explanation: "Understand comparative testing between different versions or implementations"
+      },
+      {
+        id: "lo9.4",
+        text: "Explain how A/B testing is applied to the testing of AI-based systems.",
+        kLevel: "K2",
+        explanation: "Learn statistical testing methods for comparing AI model variants"
+      },
+      {
+        id: "lo9.5",
+        text: "Apply metamorphic testing for the testing of AI-based systems.",
+        kLevel: "K3",
+        explanation: "Use metamorphic relations to test AI systems without explicit test oracles"
+      },
+      {
+        id: "lo9.6",
+        text: "Explain how experience-based testing can be applied to the testing of AI-based systems.",
+        kLevel: "K2",
+        explanation: "Learn exploratory and experience-based testing techniques for AI"
+      },
+      {
+        id: "lo9.7",
+        text: "For a given scenario, select appropriate test techniques when testing an AI-based system.",
+        kLevel: "K4",
+        explanation: "Choose and apply suitable testing techniques based on specific AI system characteristics"
+      }
+    ],
     lessonText: "",
     visualSummary: "",
     useCases: "",
     mnemonics: ""
   },
   10: {
-    learningObjectives: [],
+    learningObjectives: [
+      {
+        id: "lo10.1",
+        text: "Describe the main factors that differentiate the test environments for AI-based systems from those required for conventional systems.",
+        kLevel: "K2",
+        explanation: "Understand specific environmental requirements for testing AI systems"
+      },
+      {
+        id: "lo10.2",
+        text: "Describe the benefits provided by virtual test environments in the testing of AI-based systems.",
+        kLevel: "K2",
+        explanation: "Learn advantages of using simulation and virtualization for AI system testing"
+      }
+    ],
     lessonText: "",
     visualSummary: "",
     useCases: "",
     mnemonics: ""
   },
   11: {
-    learningObjectives: [],
+    learningObjectives: [
+      {
+        id: "lo11.1",
+        text: "Categorize the AI technologies used in software testing.",
+        kLevel: "K2",
+        explanation: "Understand fuzzy logic, classification/learning, and computational search techniques in testing"
+      },
+      {
+        id: "lo11.2",
+        text: "Explain how AI can assist in supporting the analysis of new defects.",
+        kLevel: "K2",
+        explanation: "Learn how AI can aid in defect triage, categorization, and prioritization"
+      },
+      {
+        id: "lo11.3",
+        text: "Explain how AI can assist in test case generation.",
+        kLevel: "K2",
+        explanation: "Understand how AI can generate test cases automatically"
+      },
+      {
+        id: "lo11.4",
+        text: "Explain how AI can assist in optimization of regression test suites.",
+        kLevel: "K2",
+        explanation: "Learn how AI optimizes test selection for regression testing"
+      },
+      {
+        id: "lo11.5",
+        text: "Explain how AI can assist in defect prediction.",
+        kLevel: "K2",
+        explanation: "Understand predictive models for identifying potentially defective code"
+      },
+      {
+        id: "lo11.6",
+        text: "Explain the use of AI in testing user interfaces.",
+        kLevel: "K2",
+        explanation: "Learn how AI supports visual testing and UI testing automation"
+      }
+    ],
     lessonText: "",
     visualSummary: "",
     useCases: "",
