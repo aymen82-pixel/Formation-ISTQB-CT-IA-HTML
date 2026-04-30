@@ -1,0 +1,459 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CT-AI — Banque de QCM</title>
+<style>
+  :root {
+    --bg: #faf9f6;
+    --bg-card: #ffffff;
+    --bg-secondary: #f1efe8;
+    --text-primary: #1a1a1a;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #888780;
+    --border: rgba(0,0,0,0.12);
+    --border-strong: rgba(0,0,0,0.25);
+    --accent: #534AB7;
+    --accent-bg: #EEEDFE;
+    --accent-text: #26215C;
+    --success: #0F6E56;
+    --success-bg: #E1F5EE;
+    --success-border: #5DCAA5;
+    --danger: #A32D2D;
+    --danger-bg: #FCEBEB;
+    --danger-border: #F09595;
+    --warning-bg: #FAEEDA;
+    --warning-text: #633806;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--font);
+    color: var(--text-primary);
+    background: var(--bg);
+    margin: 0;
+    line-height: 1.6;
+    font-size: 16px;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px 24px 80px; }
+  header {
+    border-bottom: 0.5px solid var(--border);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .back-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+  }
+  .back-link:hover { color: var(--text-primary); }
+  h1 { font-size: 24px; font-weight: 500; margin: 0; }
+  .filters {
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .filter-group { display: flex; flex-direction: column; gap: 4px; min-width: 140px; }
+  .filter-group label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  select, button.primary, .filters input {
+    padding: 8px 12px;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: var(--font);
+  }
+  button.primary {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    cursor: pointer;
+    font-weight: 500;
+  }
+  button.primary:hover { opacity: 0.9; }
+  button.ghost {
+    background: transparent;
+    border: 0.5px solid var(--border-strong);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    cursor: pointer;
+    font-family: var(--font);
+  }
+  button.ghost:hover { background: var(--bg-secondary); }
+  .stats-bar {
+    background: var(--accent-bg);
+    color: var(--accent-text);
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .question-card {
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+  .q-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 12px;
+  }
+  .badge {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+  .badge.lo { background: var(--accent-bg); color: var(--accent-text); }
+  .badge.k1 { background: #E1F5EE; color: #0F6E56; }
+  .badge.k2 { background: #E6F1FB; color: #0C447C; }
+  .badge.k3 { background: #FAEEDA; color: #633806; }
+  .badge.k4 { background: #FBEAF0; color: #72243E; }
+  .badge.multi { background: #F4C0D1; color: #4B1528; }
+  .q-stem { font-size: 15px; margin-bottom: 16px; font-weight: 500; }
+  .q-options { list-style: none; padding: 0; margin: 0 0 12px; }
+  .q-options li {
+    margin-bottom: 8px;
+    padding: 12px 14px;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: all 0.15s;
+    font-size: 14.5px;
+  }
+  .q-options li:hover { background: var(--bg-secondary); }
+  .q-options li.selected { border-color: var(--accent); background: var(--accent-bg); }
+  .q-options li.correct {
+    border-color: var(--success-border);
+    background: var(--success-bg);
+    color: var(--success);
+  }
+  .q-options li.wrong {
+    border-color: var(--danger-border);
+    background: var(--danger-bg);
+    color: var(--danger);
+  }
+  .opt-letter {
+    font-weight: 500;
+    width: 22px;
+    flex-shrink: 0;
+  }
+  .q-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .q-justifications {
+    margin-top: 16px;
+    border-top: 0.5px solid var(--border);
+    padding-top: 14px;
+    display: none;
+  }
+  .q-justifications.visible { display: block; }
+  .just-item {
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    border-left: 3px solid var(--border);
+  }
+  .just-item.correct {
+    background: var(--success-bg);
+    color: var(--success);
+    border-left-color: var(--success);
+  }
+  .just-item.incorrect {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-left-color: var(--text-tertiary);
+  }
+  .just-item strong { font-weight: 500; }
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --bg-card: #232322;
+      --bg-secondary: #2c2c2a;
+      --text-primary: #f1efe8;
+      --text-secondary: #b4b2a9;
+      --text-tertiary: #888780;
+      --border: rgba(255,255,255,0.12);
+      --border-strong: rgba(255,255,255,0.25);
+      --accent: #AFA9EC;
+      --accent-bg: #3C3489;
+      --accent-text: #EEEDFE;
+      --success: #5DCAA5;
+      --success-bg: #085041;
+      --success-border: #5DCAA5;
+      --danger: #E24B4A;
+      --danger-bg: #501313;
+      --danger-border: #E24B4A;
+    }
+  }
+</style>
+<link rel="stylesheet" href="lesson-modal.css">
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div>
+    <a href="index.html" class="back-link">← Hub de préparation</a>
+    <h1 style="margin-top: 6px;">Banque de QCM</h1>
+  </div>
+</header>
+
+<div class="filters">
+  <div class="filter-group">
+    <label>Chapitre</label>
+    <select id="filterChapter">
+      <option value="">Tous (1–11)</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>Set</label>
+    <select id="filterSet">
+      <option value="">Tous</option>
+      <option value="main">Set principal (40)</option>
+      <option value="additional">Set additionnel (27)</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>K-level</label>
+    <select id="filterK">
+      <option value="">Tous</option>
+      <option value="K1">K1 — Remember</option>
+      <option value="K2">K2 — Understand</option>
+      <option value="K3">K3 — Apply</option>
+      <option value="K4">K4 — Analyze</option>
+    </select>
+  </div>
+  <div class="filter-group" style="flex: 1; min-width: 180px;">
+    <label>Recherche</label>
+    <input type="text" id="searchInput" placeholder="Mot-clé dans la question…">
+  </div>
+  <div style="display: flex; gap: 8px; align-self: flex-end;">
+    <button class="ghost" onclick="resetAll()">Tout reset</button>
+    <button class="primary" onclick="revealAll()">Révéler tout</button>
+  </div>
+</div>
+
+<div class="stats-bar" id="statsBar">Chargement…</div>
+
+<div id="qList"></div>
+
+</div>
+
+<script src="data.js"></script>
+<script src="lesson-modal.js"></script>
+<script>
+  const STORAGE_KEY = 'ctai_practice_v1';
+
+  // Populate chapter filter
+  const chSel = document.getElementById('filterChapter');
+  CTAI_DATA.chapters.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.num;
+    opt.textContent = `Ch.${c.num} — ${c.title}`;
+    chSel.appendChild(opt);
+  });
+
+  // State of selections per question (session-level only)
+  let answers = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  const letters = ['a','b','c','d','e'];
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
+  }
+
+  function getFilteredQuestions() {
+    const ch = document.getElementById('filterChapter').value;
+    const set = document.getElementById('filterSet').value;
+    const kl = document.getElementById('filterK').value;
+    const search = document.getElementById('searchInput').value.toLowerCase().trim();
+    return CTAI_DATA.questions.filter(q => {
+      if (ch && q.chapter != ch) return false;
+      if (set && q.set !== set) return false;
+      if (kl && q.kLevel !== kl) return false;
+      if (search && !q.stem.toLowerCase().includes(search) && !q.options.some(o => o.toLowerCase().includes(search))) return false;
+      return true;
+    });
+  }
+
+  function renderQuestions() {
+    const qs = getFilteredQuestions();
+    const list = document.getElementById('qList');
+    list.innerHTML = '';
+
+    // Update stats
+    const answered = qs.filter(q => answers[q.id] && answers[q.id].submitted).length;
+    const correct = qs.filter(q => {
+      const a = answers[q.id];
+      if (!a || !a.submitted) return false;
+      const sel = (a.selected || []).slice().sort().join(',');
+      const ok = q.correct.slice().sort().join(',');
+      return sel === ok;
+    }).length;
+    const sb = document.getElementById('statsBar');
+    sb.innerHTML = `<span>${qs.length} question(s) affichée(s)</span><span>${answered} répondue(s) — ${correct} correcte(s) ${answered ? '('+Math.round(correct/answered*100)+'%)' : ''}</span>`;
+
+    if (qs.length === 0) {
+      list.innerHTML = '<div class="empty-state">Aucune question avec ces filtres.</div>';
+      return;
+    }
+
+    qs.forEach(q => {
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      card.id = 'q-' + q.id;
+
+      const a = answers[q.id] || { selected: [], submitted: false };
+      const submitted = a.submitted;
+
+      const optsHTML = q.options.map((opt, i) => {
+        const letter = letters[i];
+        const selected = (a.selected || []).includes(letter);
+        const isCorrect = q.correct.includes(letter);
+        let cls = '';
+        if (submitted) {
+          if (isCorrect) cls = 'correct';
+          else if (selected) cls = 'wrong';
+        } else if (selected) {
+          cls = 'selected';
+        }
+        return `<li class="${cls}" onclick="toggleOption(${q.id}, '${letter}')"><span class="opt-letter">${letter})</span><span>${opt}</span></li>`;
+      }).join('');
+
+      const justHTML = q.justifications.map((j, i) => {
+        const letter = letters[i];
+        const isCorrect = q.correct.includes(letter);
+        return `<div class="just-item ${isCorrect ? 'correct' : 'incorrect'}"><strong>${letter})</strong> ${j}</div>`;
+      }).join('');
+
+      const setLabel = q.set === 'main' ? 'Main' : 'Add.';
+      const setNum = q.set === 'main' ? q.id : q.id - 40;
+      const ptsLabel = q.points > 1 ? `${q.points} pts` : '1 pt';
+      const multiBadge = q.multi ? `<span class="badge multi">Sélectionner PLUSIEURS (${q.correct.length})</span>` : '';
+
+      card.innerHTML = `
+        <div class="q-header">
+          <span class="badge">Ch.${q.chapter}</span>
+          <span class="badge lo">${q.lo}</span>
+          <span class="badge ${q.kLevel.toLowerCase()}">${q.kLevel}</span>
+          <span class="badge">${setLabel} #${setNum}</span>
+          <span class="badge">${ptsLabel}</span>
+          ${multiBadge}
+        </div>
+        <div class="q-stem">${q.stem}</div>
+        <ul class="q-options">${optsHTML}</ul>
+        <div class="q-lesson-link" style="margin-bottom:8px;">
+          <button class="lm-trigger" style="font-size:12px;" onclick="LessonModal.open(${q.chapter})">📖 Relire la le&ccedil;on Ch.${q.chapter}</button>
+        </div>
+        <div class="q-actions">
+          ${!submitted ? `<button class="primary" onclick="submitQ(${q.id})">Valider</button><button class="ghost" onclick="showAnswer(${q.id})">Voir réponse</button>` : `<button class="ghost" onclick="resetQ(${q.id})">Recommencer</button>`}
+        </div>
+        <div class="q-justifications ${submitted ? 'visible' : ''}">${justHTML}</div>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  function toggleOption(qid, letter) {
+    const q = CTAI_DATA.questions.find(x => x.id === qid);
+    const a = answers[qid] || { selected: [], submitted: false };
+    if (a.submitted) return;
+    if (q.multi) {
+      if (a.selected.includes(letter)) {
+        a.selected = a.selected.filter(x => x !== letter);
+      } else {
+        a.selected.push(letter);
+      }
+    } else {
+      a.selected = [letter];
+    }
+    answers[qid] = a;
+    saveState();
+    renderQuestions();
+  }
+
+  function submitQ(qid) {
+    answers[qid] = answers[qid] || { selected: [], submitted: false };
+    answers[qid].submitted = true;
+    saveState();
+    renderQuestions();
+  }
+
+  function showAnswer(qid) {
+    answers[qid] = answers[qid] || { selected: [], submitted: false };
+    answers[qid].submitted = true;
+    saveState();
+    renderQuestions();
+  }
+
+  function resetQ(qid) {
+    delete answers[qid];
+    saveState();
+    renderQuestions();
+  }
+
+  function revealAll() {
+    getFilteredQuestions().forEach(q => {
+      answers[q.id] = answers[q.id] || { selected: [], submitted: false };
+      answers[q.id].submitted = true;
+    });
+    saveState();
+    renderQuestions();
+  }
+
+  function resetAll() {
+    if (confirm('Effacer toutes les réponses ?')) {
+      answers = {};
+      saveState();
+      renderQuestions();
+    }
+  }
+
+  ['filterChapter','filterSet','filterK','searchInput'].forEach(id => {
+    document.getElementById(id).addEventListener('input', renderQuestions);
+  });
+
+  renderQuestions();
+</script>
+</body>
+</html>

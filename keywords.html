@@ -1,0 +1,541 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CT-AI — Flashcards mots-clés</title>
+<style>
+  :root {
+    --bg: #faf9f6;
+    --bg-card: #ffffff;
+    --bg-secondary: #f1efe8;
+    --text-primary: #1a1a1a;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #888780;
+    --border: rgba(0,0,0,0.12);
+    --border-strong: rgba(0,0,0,0.25);
+    --accent: #534AB7;
+    --accent-bg: #EEEDFE;
+    --accent-text: #26215C;
+    --success: #0F6E56;
+    --success-bg: #E1F5EE;
+    --danger: #A32D2D;
+    --danger-bg: #FCEBEB;
+    --warning-bg: #FAEEDA;
+    --warning-text: #633806;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--font);
+    color: var(--text-primary);
+    background: var(--bg);
+    margin: 0;
+    line-height: 1.6;
+    font-size: 16px;
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 24px; }
+  header {
+    border-bottom: 0.5px solid var(--border);
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+  }
+  .back-link { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+  .back-link:hover { color: var(--text-primary); }
+  h1 { font-size: 24px; font-weight: 500; margin: 6px 0 4px; }
+  .subtitle { color: var(--text-secondary); font-size: 14px; margin: 0; }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  .control-group { display: flex; flex-direction: column; gap: 4px; min-width: 140px; }
+  .control-group label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  select, button {
+    padding: 8px 12px;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: var(--font);
+  }
+  button { cursor: pointer; }
+  button:hover { background: var(--bg-secondary); }
+  button.primary {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  button.primary:hover { opacity: 0.9; background: var(--accent); }
+
+  .stats-bar {
+    background: var(--accent-bg);
+    color: var(--accent-text);
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* The card */
+  .card-stage {
+    perspective: 1500px;
+    margin: 24px auto;
+    max-width: 720px;
+  }
+  .card {
+    position: relative;
+    width: 100%;
+    min-height: 320px;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+  .card.flipped { transform: rotateY(180deg); }
+  .card-face {
+    position: absolute;
+    inset: 0;
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 36px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .card-face.back {
+    transform: rotateY(180deg);
+    background: var(--accent-bg);
+    color: var(--accent-text);
+    border-color: var(--accent);
+    text-align: left;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .card-recto-label,
+  .card-verso-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .card-verso-label { color: var(--accent-text); }
+  .card-term {
+    font-size: 28px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  .card-chapter {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    margin-top: 16px;
+  }
+  .card-back-term {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .card-back-def {
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--accent-text);
+  }
+  .card-back-def strong { font-weight: 500; }
+
+  .flip-hint {
+    text-align: center;
+    color: var(--text-tertiary);
+    font-size: 13px;
+    margin-top: 12px;
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin: 16px 0;
+    flex-wrap: wrap;
+  }
+  .nav-info { font-variant-numeric: tabular-nums; font-weight: 500; font-size: 14px; }
+
+  .review-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 16px 0;
+    flex-wrap: wrap;
+  }
+  .review-btn {
+    padding: 10px 16px;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .review-btn.know { color: var(--success); border-color: var(--success); }
+  .review-btn.know:hover { background: var(--success-bg); }
+  .review-btn.dont-know { color: var(--danger); border-color: var(--danger); }
+  .review-btn.dont-know:hover { background: var(--danger-bg); }
+  .review-btn.skip { color: var(--text-secondary); }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+    background: var(--bg-card);
+    border: 0.5px dashed var(--border);
+    border-radius: var(--radius-lg);
+  }
+  .empty-state .big { font-size: 32px; margin-bottom: 8px; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+  }
+  .legend-pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    margin-right: 4px;
+    font-weight: 500;
+  }
+  .pill-testing { background: var(--bg-secondary); color: var(--text-secondary); }
+  .pill-ai { background: var(--accent-bg); color: var(--accent-text); }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --bg-card: #232322;
+      --bg-secondary: #2c2c2a;
+      --text-primary: #f1efe8;
+      --text-secondary: #b4b2a9;
+      --text-tertiary: #888780;
+      --border: rgba(255,255,255,0.12);
+      --border-strong: rgba(255,255,255,0.25);
+      --accent: #AFA9EC;
+      --accent-bg: #3C3489;
+      --accent-text: #EEEDFE;
+      --success: #5DCAA5;
+      --success-bg: #085041;
+      --danger: #E24B4A;
+      --danger-bg: #501313;
+    }
+  }
+</style>
+<link rel="stylesheet" href="lesson-modal.css">
+</head>
+<body>
+<div class="container">
+
+<header>
+  <a href="index.html" class="back-link">← Hub de préparation</a>
+  <h1>Flashcards mots-clés</h1>
+  <p class="subtitle">Tous les keywords du syllabus officiel — cartes recto/verso pour mémorisation. Marque celles à revoir, le système les conserve d'une session à l'autre.</p>
+</header>
+
+<div class="controls">
+  <div class="control-group">
+    <label>Chapitre</label>
+    <select id="filterChapter">
+      <option value="">Tous (1–11)</option>
+    </select>
+  </div>
+  <div class="control-group">
+    <label>Type</label>
+    <select id="filterType">
+      <option value="">Testing + IA</option>
+      <option value="testing">Testing keywords</option>
+      <option value="ai">AI-specific keywords</option>
+    </select>
+  </div>
+  <div class="control-group">
+    <label>Mode</label>
+    <select id="modeSelect">
+      <option value="all">Toutes les cartes</option>
+      <option value="review">À réviser uniquement</option>
+      <option value="known">Maîtrisées uniquement</option>
+    </select>
+  </div>
+  <div style="display: flex; gap: 8px; align-self: flex-end; flex-wrap: wrap;">
+    <button onclick="shuffleDeck()">🔀 Mélanger</button>
+    <button onclick="resetMastery()">Réinitialiser</button>
+  </div>
+</div>
+
+<div class="stats-bar" id="statsBar">Chargement…</div>
+
+<div class="legend">
+  Légende :
+  <span><span class="legend-pill pill-ai">AI-specific</span> spécifique IA</span>
+  <span><span class="legend-pill pill-testing">Testing</span> terminologie test</span>
+</div>
+
+<div id="cardArea"></div>
+
+</div>
+
+<script src="data.js"></script>
+<script src="lesson-modal.js"></script>
+<script>
+  const STORAGE_KEY = 'ctai_flashcards_v1';
+  const state = {
+    chapterFilter: '',
+    typeFilter: '',
+    mode: 'all',
+    deck: [],
+    currentIdx: 0,
+    flipped: false,
+    mastery: JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') // { 'term::chapter': 'know'|'review' }
+  };
+
+  function saveMastery() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.mastery));
+  }
+
+  // Build full keyword list from data.js
+  function buildAllCards() {
+    const all = [];
+    Object.keys(CTAI_DATA.keywords).forEach(chNum => {
+      const ch = +chNum;
+      const obj = CTAI_DATA.keywords[chNum];
+      obj.testing.forEach(term => {
+        all.push({ term, chapter: ch, type: 'testing' });
+      });
+      obj.ai.forEach(term => {
+        all.push({ term, chapter: ch, type: 'ai' });
+      });
+    });
+    return all;
+  }
+  const allCards = buildAllCards();
+
+  // Find a definition for a term (case-insensitive, several variants)
+  function getDefinition(term) {
+    if (CTAI_DATA.keywordDefinitions[term]) return CTAI_DATA.keywordDefinitions[term];
+    // Try without parens, e.g. "AI as a Service (AIaaS)" → "AIaaS (AI as a Service)"
+    const alt = term.replace(/^(.*)\s*\((.*)\)$/, '$2 ($1)');
+    if (CTAI_DATA.keywordDefinitions[alt]) return CTAI_DATA.keywordDefinitions[alt];
+    // Try without parenthetical
+    const noParen = term.replace(/\s*\(.*?\)\s*/g, '').trim();
+    if (CTAI_DATA.keywordDefinitions[noParen]) return CTAI_DATA.keywordDefinitions[noParen];
+    // Try capitalized first letter / lowercase first letter
+    const cap = noParen.charAt(0).toUpperCase() + noParen.slice(1);
+    const low = noParen.charAt(0).toLowerCase() + noParen.slice(1);
+    if (CTAI_DATA.keywordDefinitions[cap]) return CTAI_DATA.keywordDefinitions[cap];
+    if (CTAI_DATA.keywordDefinitions[low]) return CTAI_DATA.keywordDefinitions[low];
+    return null;
+  }
+
+  function masteryKey(card) { return `${card.term}::${card.chapter}::${card.type}`; }
+
+  function applyFilters() {
+    state.deck = allCards.filter(c => {
+      if (state.chapterFilter && c.chapter != state.chapterFilter) return false;
+      if (state.typeFilter && c.type !== state.typeFilter) return false;
+      if (state.mode === 'review' && state.mastery[masteryKey(c)] !== 'review') return false;
+      if (state.mode === 'known' && state.mastery[masteryKey(c)] !== 'know') return false;
+      return true;
+    });
+    state.currentIdx = Math.min(state.currentIdx, state.deck.length - 1);
+    if (state.currentIdx < 0) state.currentIdx = 0;
+    state.flipped = false;
+    render();
+  }
+
+  function shuffleDeck() {
+    state.deck.sort(() => Math.random() - 0.5);
+    state.currentIdx = 0;
+    state.flipped = false;
+    render();
+  }
+
+  function flipCard() {
+    state.flipped = !state.flipped;
+    document.querySelector('.card')?.classList.toggle('flipped', state.flipped);
+  }
+
+  function nextCard() {
+    if (state.currentIdx < state.deck.length - 1) {
+      state.currentIdx++;
+      state.flipped = false;
+      render();
+    }
+  }
+
+  function prevCard() {
+    if (state.currentIdx > 0) {
+      state.currentIdx--;
+      state.flipped = false;
+      render();
+    }
+  }
+
+  function markCard(label) {
+    const c = state.deck[state.currentIdx];
+    if (!c) return;
+    if (label === 'know') state.mastery[masteryKey(c)] = 'know';
+    else if (label === 'review') state.mastery[masteryKey(c)] = 'review';
+    else delete state.mastery[masteryKey(c)];
+    saveMastery();
+    nextCard();
+    render();
+  }
+
+  function resetMastery() {
+    if (confirm('Réinitialiser toutes les marques (maîtrisée / à revoir) ?')) {
+      state.mastery = {};
+      saveMastery();
+      render();
+    }
+  }
+
+  function updateStatsBar() {
+    const total = allCards.filter(c => {
+      if (state.chapterFilter && c.chapter != state.chapterFilter) return false;
+      if (state.typeFilter && c.type !== state.typeFilter) return false;
+      return true;
+    }).length;
+    let known = 0, review = 0;
+    Object.keys(state.mastery).forEach(k => {
+      const [term, chStr, type] = k.split('::');
+      const ch = +chStr;
+      if (state.chapterFilter && ch != state.chapterFilter) return;
+      if (state.typeFilter && type !== state.typeFilter) return;
+      if (state.mastery[k] === 'know') known++;
+      else if (state.mastery[k] === 'review') review++;
+    });
+    const sb = document.getElementById('statsBar');
+    sb.innerHTML = `<span>${total} carte(s) au total</span><span>${known} maîtrisée(s) · ${review} à revoir · ${total-known-review} non marquée(s)</span>`;
+  }
+
+  function render() {
+    updateStatsBar();
+    const area = document.getElementById('cardArea');
+    if (state.deck.length === 0) {
+      area.innerHTML = `<div class="empty-state">
+        <div class="big">∅</div>
+        <p>Aucune carte avec ces filtres.</p>
+        <p style="font-size: 13px;">Essaye un autre chapitre ou change le mode.</p>
+      </div>`;
+      return;
+    }
+
+    const c = state.deck[state.currentIdx];
+    const ch = CTAI_DATA.chapters.find(x => x.num === c.chapter);
+    const def = getDefinition(c.term);
+    const masteryStatus = state.mastery[masteryKey(c)];
+    const typeLabel = c.type === 'ai' ? 'AI-specific' : 'Testing';
+    const typePill = c.type === 'ai' ? 'pill-ai' : 'pill-testing';
+
+    area.innerHTML = `
+      <div class="card-stage">
+        <div class="card ${state.flipped?'flipped':''}" onclick="flipCard()">
+          <div class="card-face">
+            <div class="card-recto-label">Recto · à mémoriser</div>
+            <div class="card-term">${c.term}</div>
+            <span class="legend-pill ${typePill}" style="font-size: 12px;">${typeLabel}</span>
+            <div class="card-chapter">Chapitre ${ch.num} — ${ch.title}</div>
+            ${masteryStatus ? `<div style="margin-top: 12px; font-size: 12px; color: ${masteryStatus==='know'?'var(--success)':'var(--danger)'};">État : ${masteryStatus==='know'?'maîtrisée ✓':'à revoir ⟲'}</div>` : ''}
+          </div>
+          <div class="card-face back">
+            <div class="card-verso-label">Verso · définition</div>
+            <div class="card-back-term">${c.term}</div>
+            <div class="card-back-def">${def || '<em>Pas de définition synthétique disponible — voir le glossaire ISTQB CT-AI dans le syllabus.</em>'}</div>
+          </div>
+        </div>
+        <div class="flip-hint">↻ Clique sur la carte pour la retourner — ou appuie sur Espace</div>
+      </div>
+
+      <div class="review-buttons">
+        <button class="review-btn dont-know" onclick="markCard('review')">⟲ À revoir</button>
+        <button class="review-btn skip" onclick="markCard(null)">Effacer marque</button>
+        <button class="review-btn know" onclick="markCard('know')">✓ Maîtrisée</button>
+      </div>
+
+      <div style="text-align:center;margin:8px 0 4px;">
+        <button class="lm-trigger" onclick="LessonModal.open(${c.chapter})">📖 Relire la leçon</button>
+      </div>
+      <div class="nav-row">
+        <button onclick="prevCard()" ${state.currentIdx===0?'disabled':''}>← Précédente</button>
+        <div class="nav-info">${state.currentIdx + 1} / ${state.deck.length}</div>
+        <button onclick="nextCard()" ${state.currentIdx===state.deck.length-1?'disabled':''}>Suivante →</button>
+      </div>
+    `;
+  }
+
+  // Populate chapter filter
+  const chSel = document.getElementById('filterChapter');
+  CTAI_DATA.chapters.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.num;
+    opt.textContent = `Ch.${c.num} — ${c.title}`;
+    chSel.appendChild(opt);
+  });
+
+  document.getElementById('filterChapter').addEventListener('change', e => {
+    state.chapterFilter = e.target.value;
+    state.currentIdx = 0;
+    applyFilters();
+  });
+  document.getElementById('filterType').addEventListener('change', e => {
+    state.typeFilter = e.target.value;
+    state.currentIdx = 0;
+    applyFilters();
+  });
+  document.getElementById('modeSelect').addEventListener('change', e => {
+    state.mode = e.target.value;
+    state.currentIdx = 0;
+    applyFilters();
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+    else if (e.key === 'ArrowRight') nextCard();
+    else if (e.key === 'ArrowLeft') prevCard();
+    else if (e.key === '1') markCard('review');
+    else if (e.key === '2') markCard(null);
+    else if (e.key === '3') markCard('know');
+  });
+
+  applyFilters();
+</script>
+</body>
+</html>
