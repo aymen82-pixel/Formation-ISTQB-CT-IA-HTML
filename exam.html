@@ -1,0 +1,435 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CT-AI — Examen blanc chronométré</title>
+<link rel="stylesheet" href="style.css">
+<script src="theme.js"></script>
+</head>
+<body>
+<div class="container">
+
+<a href="index.html" class="back-link">← Hub de préparation</a>
+
+<!-- ============ START SCREEN ============ -->
+<div id="startScreen" class="start-screen">
+  <h1>Examen blanc CT-AI</h1>
+  <p style="color: var(--text-secondary); margin-top: 4px;">Conditions réelles : 40 questions tirées au hasard, 60 minutes chronométrées, score requis ≥ 65 % (26/40).</p>
+
+  <div class="rules">
+    <h3 style="margin-top: 0; color: var(--accent-text);">Règles de l'examen</h3>
+    <ul>
+      <li>Une fois lancé, le timer ne s'arrête plus — la session est sauvegardée si tu fermes l'onglet.</li>
+      <li>Tu peux marquer une question pour y revenir (drapeau).</li>
+      <li>Les questions à choix multiples sont signalées explicitement.</li>
+      <li>Le score est calculé en points (les questions valent 1 ou 2 pts selon le syllabus officiel).</li>
+      <li>Les corrections détaillées et l'analyse par chapitre s'affichent à la fin.</li>
+    </ul>
+  </div>
+
+  <h3>Choisis le pool de questions</h3>
+  <div class="options-grid">
+    <div class="opt-card" data-pool="all" onclick="selectPool('all')">
+      <h4>Pool complet (recommandé)</h4>
+      <p>Tirage parmi les 67 questions (main + additional)</p>
+    </div>
+    <div class="opt-card selected" data-pool="main" onclick="selectPool('main')">
+      <h4>Set principal seulement</h4>
+      <p>40 questions du set A officiel ISTQB</p>
+    </div>
+    <div class="opt-card" data-pool="additional" onclick="selectPool('additional')">
+      <h4>Set additionnel</h4>
+      <p>27 questions complémentaires (utile pour révisions J10)</p>
+    </div>
+  </div>
+
+  <div id="resumeBlock" style="display: none; margin: 16px 0; padding: 12px 16px; background: var(--warning-bg); color: var(--warning-text); border-radius: var(--radius);">
+    Une session non terminée a été détectée. <button onclick="resumeExam()" style="margin-left: 8px;" class="nav-btn">Reprendre</button> <button onclick="discardSession()" style="margin-left: 4px;" class="nav-btn">Recommencer</button>
+  </div>
+
+  <button class="start-btn" onclick="startExam()">Lancer l'examen blanc</button>
+</div>
+
+<!-- ============ EXAM SCREEN ============ -->
+<div id="examScreen" style="display: none;">
+  <div class="exam-bar">
+    <div>
+      <div class="timer" id="timerDisplay">60:00</div>
+      <div style="font-size: 12px; color: var(--text-secondary);">Temps restant</div>
+    </div>
+    <div style="flex: 1; min-width: 0;">
+      <div class="progress-info" id="progressInfo">Question 1 / 40</div>
+      <div class="progress-bar"><div id="examProgress" style="width: 2.5%"></div></div>
+    </div>
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="finishExam()">Terminer</button>
+    </div>
+  </div>
+
+  <div id="questionContainer"></div>
+
+  <div class="actions-row">
+    <button class="nav-btn" id="prevBtn" onclick="navigate(-1)">← Précédente</button>
+    <button class="flag-btn" id="flagBtn" onclick="toggleFlag()">✓ Marquer pour revoir</button>
+    <button class="nav-btn primary" id="nextBtn" onclick="navigate(1)">Suivante →</button>
+  </div>
+
+  <h3 style="margin-top: 24px;">Vue d'ensemble</h3>
+  <p style="font-size: 13px; color: var(--text-secondary); margin-top: 0;">Clique sur un numéro pour t'y rendre. Bleu = répondue · Orange = marquée · Cadre = active.</p>
+  <div class="q-grid" id="qGrid"></div>
+</div>
+
+<!-- ============ RESULTS SCREEN ============ -->
+<div id="resultsScreen" style="display: none;"></div>
+
+</div>
+
+<script src="data.js"></script>
+<script>
+  const SESSION_KEY = 'ctai_exam_session_v1';
+  const letters = ['a','b','c','d','e'];
+
+  let pool = 'main';
+  let exam = null; // { questions:[], answers:{}, flagged:Set, startTime, endTime, currentIdx, durationSec }
+  let timerInterval = null;
+
+  // ---------- Start screen logic ----------
+  function selectPool(p) {
+    pool = p;
+    document.querySelectorAll('.opt-card').forEach(c => c.classList.remove('selected'));
+    document.querySelector(`.opt-card[data-pool="${p}"]`).classList.add('selected');
+  }
+
+  function checkExistingSession() {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return;
+    try {
+      const s = JSON.parse(raw);
+      if (s && !s.finished && s.questions && s.questions.length) {
+        document.getElementById('resumeBlock').style.display = 'block';
+      }
+    } catch {}
+  }
+
+  function discardSession() {
+    localStorage.removeItem(SESSION_KEY);
+    document.getElementById('resumeBlock').style.display = 'none';
+  }
+
+  function resumeExam() {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return;
+    exam = JSON.parse(raw);
+    exam.flagged = new Set(exam.flagged || []);
+    showExamScreen();
+  }
+
+  function startExam() {
+    let candidates = CTAI_DATA.questions.filter(q => pool === 'all' || q.set === pool);
+    // Shuffle
+    candidates = candidates.slice().sort(() => Math.random() - 0.5);
+    // Take exam_questions (40) — if pool has fewer, take all
+    const target = Math.min(CTAI_DATA.metadata.examQuestions, candidates.length);
+    candidates = candidates.slice(0, target);
+
+    exam = {
+      questions: candidates.map(q => q.id),
+      answers: {},
+      flagged: new Set(),
+      startTime: Date.now(),
+      durationSec: CTAI_DATA.metadata.examDuration * 60,
+      currentIdx: 0,
+      finished: false,
+      pool: pool
+    };
+    persistExam();
+    showExamScreen();
+  }
+
+  function persistExam() {
+    if (!exam) return;
+    const copy = Object.assign({}, exam, { flagged: Array.from(exam.flagged) });
+    localStorage.setItem(SESSION_KEY, JSON.stringify(copy));
+  }
+
+  // ---------- Exam logic ----------
+  function showExamScreen() {
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('examScreen').style.display = 'block';
+    document.getElementById('resultsScreen').style.display = 'none';
+    renderQuestion();
+    renderGrid();
+    startTimer();
+  }
+
+  function getCurrentQ() {
+    return CTAI_DATA.questions.find(q => q.id === exam.questions[exam.currentIdx]);
+  }
+
+  function renderQuestion() {
+    const q = getCurrentQ();
+    const a = exam.answers[q.id] || [];
+    const optsHTML = q.options.map((opt, i) => {
+      const letter = letters[i];
+      const sel = a.includes(letter) ? ' selected' : '';
+      return `<li class="${sel.trim()}" onclick="toggleOption('${letter}')"><span class="opt-letter">${letter})</span><span>${opt}</span></li>`;
+    }).join('');
+    const multiBadge = q.multi ? `<span class="badge multi">Sélectionner PLUSIEURS (${q.correct.length})</span>` : '';
+    const flagBadge = exam.flagged.has(q.id) ? `<span class="badge flagged">✓ Marquée</span>` : '';
+    const ptsLabel = q.points > 1 ? `${q.points} pts` : '1 pt';
+
+    document.getElementById('questionContainer').innerHTML = `
+      <div class="question-card">
+        <div class="q-meta">
+          <span class="badge">Question ${exam.currentIdx + 1} / ${exam.questions.length}</span>
+          <span class="badge">${ptsLabel}</span>
+          ${multiBadge}
+          ${flagBadge}
+        </div>
+        <div class="q-stem">${q.stem}</div>
+        <ul class="q-options">${optsHTML}</ul>
+      </div>`;
+
+    document.getElementById('progressInfo').textContent = `Question ${exam.currentIdx + 1} / ${exam.questions.length}`;
+    document.getElementById('examProgress').style.width = ((exam.currentIdx + 1) / exam.questions.length * 100) + '%';
+    document.getElementById('prevBtn').disabled = exam.currentIdx === 0;
+    document.getElementById('nextBtn').textContent = (exam.currentIdx === exam.questions.length - 1) ? 'Terminer →' : 'Suivante →';
+    document.getElementById('flagBtn').classList.toggle('active', exam.flagged.has(q.id));
+  }
+
+  function toggleOption(letter) {
+    const q = getCurrentQ();
+    let a = exam.answers[q.id] || [];
+    if (q.multi) {
+      if (a.includes(letter)) a = a.filter(x => x !== letter);
+      else a = [...a, letter];
+    } else {
+      a = [letter];
+    }
+    exam.answers[q.id] = a;
+    persistExam();
+    renderQuestion();
+    renderGrid();
+  }
+
+  function navigate(delta) {
+    const newIdx = exam.currentIdx + delta;
+    if (newIdx < 0) return;
+    if (newIdx >= exam.questions.length) {
+      finishExam();
+      return;
+    }
+    exam.currentIdx = newIdx;
+    persistExam();
+    renderQuestion();
+    renderGrid();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function jumpTo(idx) {
+    exam.currentIdx = idx;
+    persistExam();
+    renderQuestion();
+    renderGrid();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleFlag() {
+    const q = getCurrentQ();
+    if (exam.flagged.has(q.id)) exam.flagged.delete(q.id);
+    else exam.flagged.add(q.id);
+    persistExam();
+    renderQuestion();
+    renderGrid();
+  }
+
+  function renderGrid() {
+    const grid = document.getElementById('qGrid');
+    grid.innerHTML = '';
+    exam.questions.forEach((qid, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'q-jump';
+      btn.textContent = i + 1;
+      const a = exam.answers[qid];
+      if (a && a.length) btn.classList.add('answered');
+      if (exam.flagged.has(qid)) btn.classList.add('flagged');
+      if (i === exam.currentIdx) btn.classList.add('current');
+      btn.onclick = () => jumpTo(i);
+      grid.appendChild(btn);
+    });
+  }
+
+  // ---------- Timer ----------
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  function updateTimer() {
+    const elapsed = Math.floor((Date.now() - exam.startTime) / 1000);
+    const remaining = Math.max(0, exam.durationSec - elapsed);
+    const m = Math.floor(remaining / 60);
+    const s = remaining % 60;
+    const t = document.getElementById('timerDisplay');
+    if (!t) return;
+    t.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    t.classList.toggle('warning', remaining < 600 && remaining >= 60);
+    t.classList.toggle('danger', remaining < 60);
+    if (remaining === 0) {
+      clearInterval(timerInterval);
+      finishExam();
+    }
+  }
+
+  // ---------- Finish + Results ----------
+  function finishExam() {
+    if (!exam) return;
+    const unanswered = exam.questions.filter(qid => !exam.answers[qid] || !exam.answers[qid].length).length;
+    if (unanswered > 0 && !exam.finished) {
+      if (!confirm(`${unanswered} question(s) non répondue(s). Terminer quand même ?`)) return;
+    }
+    if (timerInterval) clearInterval(timerInterval);
+    exam.finished = true;
+    exam.endTime = Date.now();
+    persistExam();
+    renderResults();
+  }
+
+  function renderResults() {
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('examScreen').style.display = 'none';
+    const screen = document.getElementById('resultsScreen');
+    screen.style.display = 'block';
+
+    let totalPoints = 0, earnedPoints = 0;
+    let correctCount = 0;
+    const byChapter = {};
+
+    const reviewItems = exam.questions.map(qid => {
+      const q = CTAI_DATA.questions.find(x => x.id === qid);
+      totalPoints += q.points;
+      const userAns = (exam.answers[qid] || []).slice().sort();
+      const correctAns = q.correct.slice().sort();
+      const isCorrect = userAns.length > 0 && userAns.join(',') === correctAns.join(',');
+      const isSkipped = userAns.length === 0;
+      if (isCorrect) {
+        earnedPoints += q.points;
+        correctCount++;
+      }
+      // Chapter breakdown
+      if (!byChapter[q.chapter]) byChapter[q.chapter] = { total: 0, correct: 0, totalPoints: 0, earnedPoints: 0 };
+      byChapter[q.chapter].total++;
+      byChapter[q.chapter].totalPoints += q.points;
+      if (isCorrect) {
+        byChapter[q.chapter].correct++;
+        byChapter[q.chapter].earnedPoints += q.points;
+      }
+      return { q, userAns, correctAns, isCorrect, isSkipped };
+    });
+
+    const pct = totalPoints ? Math.round(earnedPoints / totalPoints * 100) : 0;
+    const passed = pct >= CTAI_DATA.metadata.passingScore;
+    const elapsedMin = Math.floor((exam.endTime - exam.startTime) / 60000);
+    const elapsedSec = Math.floor(((exam.endTime - exam.startTime) % 60000) / 1000);
+
+    // Chapter breakdown HTML
+    const chapterRows = Object.keys(byChapter).sort((a,b)=>+a-+b).map(chNum => {
+      const stat = byChapter[chNum];
+      const ch = CTAI_DATA.chapters.find(c => c.num == chNum);
+      const chPct = stat.totalPoints ? Math.round(stat.earnedPoints / stat.totalPoints * 100) : 0;
+      const cls = chPct >= 80 ? 'good' : (chPct < 50 ? 'poor' : '');
+      return `<div class="chapter-row">
+        <div style="width: 36px; font-weight: 500;">Ch.${ch.num}</div>
+        <div class="chapter-name">${ch.title}</div>
+        <div class="chapter-bar"><div class="${cls}" style="width: ${chPct}%"></div></div>
+        <div class="chapter-score">${stat.earnedPoints}/${stat.totalPoints} pts (${chPct}%)</div>
+      </div>`;
+    }).join('');
+
+    // Review items HTML
+    const reviewHTML = reviewItems.map((r, idx) => {
+      const cls = r.isCorrect ? 'correct' : (r.isSkipped ? 'skipped' : 'wrong');
+      const userText = r.isSkipped ? '<em>Aucune réponse</em>' : r.userAns.map(l => `${l}) ${r.q.options[letters.indexOf(l)]}`).join('<br>');
+      const correctText = r.correctAns.map(l => `${l}) ${r.q.options[letters.indexOf(l)]}`).join('<br>');
+      const justHTML = r.q.justifications.map((j,i) => {
+        const ok = r.q.correct.includes(letters[i]);
+        return `<li class="${ok?'is-correct':''}"><strong>${letters[i]})</strong> ${j}</li>`;
+      }).join('');
+      return `<div class="review-q ${cls}">
+        <div class="q-meta">
+          <span class="badge">Q${idx+1}</span>
+          <span class="badge">Ch.${r.q.chapter}</span>
+          <span class="badge">${r.q.lo}</span>
+          <span class="badge">${r.q.kLevel}</span>
+          ${r.isCorrect ? '<span class="badge" style="background: var(--success-bg); color: var(--success);">✓ Correct</span>' : (r.isSkipped ? '<span class="badge">Non répondue</span>' : '<span class="badge" style="background: var(--danger-bg); color: var(--danger);">✗ Incorrect</span>')}
+        </div>
+        <div class="review-stem">${r.q.stem}</div>
+        <div class="review-row"><span class="lbl">Ta réponse :</span> <span class="${r.isCorrect ? 'correct-text' : (r.isSkipped ? '' : 'wrong-text')}">${userText}</span></div>
+        ${!r.isCorrect ? `<div class="review-row"><span class="lbl">Correct :</span> <span class="correct-text">${correctText}</span></div>` : ''}
+        <details><summary>Voir les justifications complètes</summary>
+          <ul class="just-list">${justHTML}</ul>
+        </details>
+      </div>`;
+    }).join('');
+
+    screen.innerHTML = `
+      <div class="result-hero">
+        <h2>Résultat de l'examen blanc</h2>
+        <div class="result-score ${passed?'pass':'fail'}">${earnedPoints}/${totalPoints}</div>
+        <div class="result-pct">Score : ${pct}% — Note de passage : ${CTAI_DATA.metadata.passingScore}%</div>
+        <div class="verdict-badge ${passed?'pass':'fail'}">${passed ? '✓ ADMIS — Tu as atteint le score requis' : '✗ ÉCHEC — Continue les révisions'}</div>
+        <div class="stats-grid">
+          <div class="stat-mini"><div class="stat-mini-label">Questions correctes</div><div class="stat-mini-value">${correctCount} / ${exam.questions.length}</div></div>
+          <div class="stat-mini"><div class="stat-mini-label">Temps utilisé</div><div class="stat-mini-value">${elapsedMin}min ${elapsedSec}s</div></div>
+          <div class="stat-mini"><div class="stat-mini-label">Marquées</div><div class="stat-mini-value">${exam.flagged.size}</div></div>
+          <div class="stat-mini"><div class="stat-mini-label">Non répondues</div><div class="stat-mini-value">${reviewItems.filter(r=>r.isSkipped).length}</div></div>
+        </div>
+        <div style="margin-top: 20px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+          <button class="start-btn" onclick="restart()">Refaire un examen</button>
+          <button class="nav-btn" onclick="window.location.href='index.html'">Retour au hub</button>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 24px;">Performance par chapitre</h3>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-top: 0;">Cible les chapitres où tu es à moins de 50 % pour la révision J9-J10.</p>
+      <div class="chapter-breakdown">${chapterRows}</div>
+
+      <h3 style="margin-top: 32px;">Revue détaillée des 40 questions</h3>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-top: 0;">Concentre-toi sur les questions ✗ pour identifier les LO à retravailler dans le syllabus.</p>
+      ${reviewHTML}
+    `;
+
+    // Cleanup session so user can start fresh next time
+    localStorage.removeItem(SESSION_KEY);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function restart() {
+    exam = null;
+    document.getElementById('resultsScreen').style.display = 'none';
+    document.getElementById('startScreen').style.display = 'block';
+    document.getElementById('resumeBlock').style.display = 'none';
+  }
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (!exam || exam.finished) return;
+    if (document.getElementById('examScreen').style.display === 'none') return;
+    const q = getCurrentQ();
+    if (!q) return;
+    if (e.key === 'ArrowRight') navigate(1);
+    else if (e.key === 'ArrowLeft') navigate(-1);
+    else if (e.key === 'f' || e.key === 'F') toggleFlag();
+    else if (['a','b','c','d','e'].includes(e.key.toLowerCase())) {
+      if (q.options.length > letters.indexOf(e.key.toLowerCase())) toggleOption(e.key.toLowerCase());
+    }
+  });
+
+  checkExistingSession();
+</script>
+<script type="module" src="motion-animations.js"></script>
+</body>
+</html>
+

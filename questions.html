@@ -4,230 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CT-AI — Banque de QCM</title>
-<style>
-  :root {
-    --bg: #faf9f6;
-    --bg-card: #ffffff;
-    --bg-secondary: #f1efe8;
-    --text-primary: #1a1a1a;
-    --text-secondary: #5f5e5a;
-    --text-tertiary: #888780;
-    --border: rgba(0,0,0,0.12);
-    --border-strong: rgba(0,0,0,0.25);
-    --accent: #534AB7;
-    --accent-bg: #EEEDFE;
-    --accent-text: #26215C;
-    --success: #0F6E56;
-    --success-bg: #E1F5EE;
-    --success-border: #5DCAA5;
-    --danger: #A32D2D;
-    --danger-bg: #FCEBEB;
-    --danger-border: #F09595;
-    --warning-bg: #FAEEDA;
-    --warning-text: #633806;
-    --radius: 8px;
-    --radius-lg: 12px;
-    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  }
-  * { box-sizing: border-box; }
-  body {
-    font-family: var(--font);
-    color: var(--text-primary);
-    background: var(--bg);
-    margin: 0;
-    line-height: 1.6;
-    font-size: 16px;
-  }
-  .container { max-width: 1100px; margin: 0 auto; padding: 24px 24px 80px; }
-  header {
-    border-bottom: 0.5px solid var(--border);
-    padding-bottom: 16px;
-    margin-bottom: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .back-link {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 14px;
-  }
-  .back-link:hover { color: var(--text-primary); }
-  h1 { font-size: 24px; font-weight: 500; margin: 0; }
-  .filters {
-    background: var(--bg-card);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 16px;
-    margin-bottom: 16px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-  }
-  .filter-group { display: flex; flex-direction: column; gap: 4px; min-width: 140px; }
-  .filter-group label {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
-    font-weight: 500;
-  }
-  select, button.primary, .filters input {
-    padding: 8px 12px;
-    border: 0.5px solid var(--border-strong);
-    border-radius: var(--radius);
-    background: var(--bg-card);
-    color: var(--text-primary);
-    font-size: 14px;
-    font-family: var(--font);
-  }
-  button.primary {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-    cursor: pointer;
-    font-weight: 500;
-  }
-  button.primary:hover { opacity: 0.9; }
-  button.ghost {
-    background: transparent;
-    border: 0.5px solid var(--border-strong);
-    color: var(--text-primary);
-    padding: 8px 12px;
-    border-radius: var(--radius);
-    font-size: 14px;
-    cursor: pointer;
-    font-family: var(--font);
-  }
-  button.ghost:hover { background: var(--bg-secondary); }
-  .stats-bar {
-    background: var(--accent-bg);
-    color: var(--accent-text);
-    padding: 10px 16px;
-    border-radius: var(--radius);
-    margin-bottom: 16px;
-    font-size: 14px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .question-card {
-    background: var(--bg-card);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 20px;
-    margin-bottom: 12px;
-  }
-  .q-header {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 12px;
-    font-size: 12px;
-  }
-  .badge {
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
-    padding: 3px 10px;
-    border-radius: 999px;
-    font-weight: 500;
-  }
-  .badge.lo { background: var(--accent-bg); color: var(--accent-text); }
-  .badge.k1 { background: #E1F5EE; color: #0F6E56; }
-  .badge.k2 { background: #E6F1FB; color: #0C447C; }
-  .badge.k3 { background: #FAEEDA; color: #633806; }
-  .badge.k4 { background: #FBEAF0; color: #72243E; }
-  .badge.multi { background: #F4C0D1; color: #4B1528; }
-  .q-stem { font-size: 15px; margin-bottom: 16px; font-weight: 500; }
-  .q-options { list-style: none; padding: 0; margin: 0 0 12px; }
-  .q-options li {
-    margin-bottom: 8px;
-    padding: 12px 14px;
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    cursor: pointer;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    transition: all 0.15s;
-    font-size: 14.5px;
-  }
-  .q-options li:hover { background: var(--bg-secondary); }
-  .q-options li.selected { border-color: var(--accent); background: var(--accent-bg); }
-  .q-options li.correct {
-    border-color: var(--success-border);
-    background: var(--success-bg);
-    color: var(--success);
-  }
-  .q-options li.wrong {
-    border-color: var(--danger-border);
-    background: var(--danger-bg);
-    color: var(--danger);
-  }
-  .opt-letter {
-    font-weight: 500;
-    width: 22px;
-    flex-shrink: 0;
-  }
-  .q-actions { display: flex; gap: 8px; margin-top: 12px; }
-  .q-justifications {
-    margin-top: 16px;
-    border-top: 0.5px solid var(--border);
-    padding-top: 14px;
-    display: none;
-  }
-  .q-justifications.visible { display: block; }
-  .just-item {
-    padding: 10px 12px;
-    margin-bottom: 6px;
-    border-radius: var(--radius);
-    font-size: 14px;
-    border-left: 3px solid var(--border);
-  }
-  .just-item.correct {
-    background: var(--success-bg);
-    color: var(--success);
-    border-left-color: var(--success);
-  }
-  .just-item.incorrect {
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
-    border-left-color: var(--text-tertiary);
-  }
-  .just-item strong { font-weight: 500; }
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-secondary);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1a1a1a;
-      --bg-card: #232322;
-      --bg-secondary: #2c2c2a;
-      --text-primary: #f1efe8;
-      --text-secondary: #b4b2a9;
-      --text-tertiary: #888780;
-      --border: rgba(255,255,255,0.12);
-      --border-strong: rgba(255,255,255,0.25);
-      --accent: #AFA9EC;
-      --accent-bg: #3C3489;
-      --accent-text: #EEEDFE;
-      --success: #5DCAA5;
-      --success-bg: #085041;
-      --success-border: #5DCAA5;
-      --danger: #E24B4A;
-      --danger-bg: #501313;
-      --danger-border: #E24B4A;
-    }
-  }
-</style>
+<link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="lesson-modal.css">
+<script src="theme.js"></script>
 </head>
 <body>
 <div class="container">
@@ -383,7 +162,7 @@
         <div class="q-stem">${q.stem}</div>
         <ul class="q-options">${optsHTML}</ul>
         <div class="q-lesson-link" style="margin-bottom:8px;">
-          <button class="lm-trigger" style="font-size:12px;" onclick="LessonModal.open(${q.chapter})">📖 Relire la le&ccedil;on Ch.${q.chapter}</button>
+          <button class="lm-trigger" style="font-size:12px;" onclick="LessonModal.open(${q.chapter})">📖 Relire la leçon Ch.${q.chapter}</button>
         </div>
         <div class="q-actions">
           ${!submitted ? `<button class="primary" onclick="submitQ(${q.id})">Valider</button><button class="ghost" onclick="showAnswer(${q.id})">Voir réponse</button>` : `<button class="ghost" onclick="resetQ(${q.id})">Recommencer</button>`}
@@ -455,5 +234,7 @@
 
   renderQuestions();
 </script>
+<script type="module" src="motion-animations.js"></script>
 </body>
 </html>
+

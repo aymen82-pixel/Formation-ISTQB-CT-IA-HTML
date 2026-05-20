@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CT-AI — Fiches synthèse</title>
+<link rel="stylesheet" href="style.css">
+<script src="theme.js"></script>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <a href="index.html" class="back-link">← Hub de préparation</a>
+  <h1>Fiches synthèse — 11 chapitres</h1>
+  <p class="subtitle">Tout ce qu'il faut retenir, condensé. Chaque fiche correspond à un chapitre du syllabus officiel CT-AI v1.0.</p>
+</header>
+
+<nav class="toc">
+  <ul class="toc-list">
+    <li><a href="#fiche-1">1 · Intro IA</a></li>
+    <li><a href="#fiche-2">2 · Qualité IA</a></li>
+    <li><a href="#fiche-3">3 · ML Overview</a></li>
+    <li><a href="#fiche-4">4 · ML Data</a></li>
+    <li><a href="#fiche-5">5 · Métriques</a></li>
+    <li><a href="#fiche-6">6 · Neural Networks</a></li>
+    <li><a href="#fiche-7">7 · Testing AI</a></li>
+    <li><a href="#fiche-8">8 · Qualité spécifique</a></li>
+    <li><a href="#fiche-9">9 · Méthodes &amp; Techniques</a></li>
+    <li><a href="#fiche-10">10 · Environnements</a></li>
+    <li><a href="#fiche-11">11 · IA pour tester</a></li>
+  </ul>
+</nav>
+
+<!-- ===== FICHE 1 ===== -->
+<section id="fiche-1" class="fiche">
+  <div class="fiche-header">
+    <div><span class="fiche-num">Ch. 1</span><h2 class="fiche-title">Introduction à l'IA</h2></div>
+    <div class="fiche-meta">105 min · 9 LO · K1–K2</div>
+  </div>
+
+  <h3>L'AI Effect</h3>
+  <p>Définition piège : <strong>plus une technologie devient familière, moins elle est perçue comme « IA »</strong>. Les systèmes experts à base de règles (1970–80) étaient considérés comme IA ; aujourd'hui ils ne le sont plus pour beaucoup. C'est l'AI Effect.</p>
+  <div class="callout warn"><strong>Piège :</strong> ne pas confondre avec « les emplois remplacés par l'IA » ou « la perception médiatique de l'IA » — ce sont des phénomènes sociaux différents.</div>
+
+  <h3>Trois niveaux d'IA</h3>
+  <table class="comp-table">
+    <thead><tr><th>Niveau</th><th>Description</th><th>Exemple</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Narrow AI</strong></td><td>Une seule tâche spécialisée</td><td>Échec, recommandation, vision, gestion de tests</td></tr>
+      <tr><td><strong>General AI</strong></td><td>Comportement intelligent comparable à l'humain, polyvalent</td><td>Robot autonome travaillant en maison/bureau/boutique</td></tr>
+      <tr><td><strong>Super AI</strong></td><td>Surpasse les capacités humaines (théorique)</td><td>État post-singularity (singularité technologique = point où l'IA dépasse l'humain)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Technologies IA (à reconnaître)</h3>
+  <p>Support vector machine (SVM), Decision tree, Bayesian optimization, Neural networks, Genetic algorithms… <strong>Évolutionary reasoning</strong> n'existe PAS comme techno IA — piège classique.</p>
+
+  <h3>Frameworks de développement</h3>
+  <p>Réels : <strong>scikit-learn</strong>, <strong>TensorFlow</strong>, <strong>PyTorch</strong>, <strong>CNTK</strong> (Microsoft), <strong>MxNet</strong> (utilisé par AWS), <strong>Keras</strong>. Faux à reconnaître : « EZPy-AI » (n'existe pas).</p>
+
+  <h3>Hardware pour IA</h3>
+  <ul>
+    <li><strong>GPU</strong> : choix raisonnable pour vision par ordinateur (parallélisme massif sur des milliers de cœurs).</li>
+    <li>Pas besoin que les processeurs d'entraînement et d'inférence soient identiques (entraînement sur cluster, inférence sur mobile, c'est normal).</li>
+    <li>Les chips IA dédiés (TPU, NPU) sont plus rapides mais pas obligatoires.</li>
+    <li>« Plus de bits = plus de précision » : <strong>faux</strong> — beaucoup de systèmes IA sont probabilistes.</li>
+  </ul>
+
+  <h3>AIaaS (AI as a Service)</h3>
+  <p>Composant IA <strong>générique</strong> fourni par un cloud provider, accessible à tous les clients. Distinction : un algorithme exclusif ≥ AIaaS, mais un sous-composant générique l'est. Ex : un système juridique privé qui utilise un module de pricing AI générique = scénario AIaaS.</p>
+
+  <h3>Pre-trained models</h3>
+  <div class="callout"><strong>Risque clé à mémoriser :</strong> différence entre les <strong>données utilisées pour entraîner</strong> le modèle et les <strong>données opérationnelles</strong> sur lesquelles il sera utilisé. C'est pour cela qu'on demande au fournisseur la nature et le format des données d'entraînement.</div>
+  <p>Le <strong>transfer learning</strong> consiste à réajuster un modèle pré-entraîné sur un nouveau domaine.</p>
+
+  <h3>Standards et régulation</h3>
+  <table class="comp-table">
+    <tbody>
+      <tr><td><strong>GDPR</strong></td><td>Données personnelles → systèmes de prêt bancaire, RH, recommandation</td></tr>
+      <tr><td><strong>ISO 26262</strong></td><td>Sécurité fonctionnelle automobile — interdit les systèmes non-déterministes (donc pas adapté à une voiture totalement autonome avec IA)</td></tr>
+      <tr><td><strong>ISO/PAS 21448 (SOTIF)</strong></td><td>Safety Of The Intended Functionality — pour véhicules routiers (pas sous-marins ni drones)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== FICHE 2 ===== -->
+<section id="fiche-2" class="fiche">
+  <div class="fiche-header">
+    <div><span class="fiche-num">Ch. 2</span><h2 class="fiche-title">Caractéristiques qualité des systèmes IA</h2></div>
+    <div class="fiche-meta">105 min  · 8 LO  · K1–K2</div>
+  </div>
+
+  <h3>Adaptability vs Flexibility vs Autonomy</h3>
+  <p>Trois concepts qui se ressemblent mais sont distincts — distinction <strong>très testée</strong>.</p>
+  <table class="comp-table">
+    <thead><tr><th>Concept</th><th>Définition</th><th>Qui change ?</th><th>Exemple</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Adaptability</strong></td><td>Capacité à être <em>modifié</em> pour rester conforme</td><td>L'humain modifie le système</td><td> « Modifier le comportement pour différents utilisateurs en moins d'1 jour  »</td></tr>
+      <tr><td><strong>Flexibility</strong></td><td>Capacité à fonctionner <em>hors des exigences initiales</em></td><td>Le système s'adapte à un nouveau contexte</td><td>Self-learning system face à un environnement imprévu</td></tr>
+      <tr><td><strong>Autonomy</strong></td><td>Capacité à fonctionner <em>longtemps sans intervention</em> humaine</td><td>Personne (jusqu'à reprise manuelle)</td><td> « Garder une distance de sécurité jusqu'à ce que le conducteur freine  »</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Evolution &amp; Self-learning</h3>
+  <p>Évolution = comment l'IA change <strong>après déploiement</strong> (pas pendant le dev).</p>
+  <ul>
+    <li>Les self-learning systems peuvent s'optimiser <strong>même dans le même environnement</strong>.</li>
+    <li><strong>Side effects</strong> sont toujours une préoccupation, surtout pour les systèmes interagissant physiquement avec des personnes (risque de comportement dangereux).</li>
+  </ul>
+
+  <h3>Bias — trois familles</h3>
+  <table class="comp-table">
+    <thead><tr><th>Type</th><th>Cause</th><th>Exemple</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Algorithmic bias</strong></td><td>L'algorithme lui-même favorise certaines sorties</td><td>Choix d'optimisation injuste</td></tr>
+      <tr><td><strong>Sample bias</strong></td><td>Données d'entraînement non représentatives</td><td>Système de crédit entraîné uniquement sur les détenteurs de carte ; système de mortalité sur des retraités uniquement</td></tr>
+      <tr><td><strong>Inappropriate bias</strong></td><td>Biais éthiquement inacceptable</td><td>Système RH discriminant selon l'âge ou le genre</td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn"><strong>Piège :</strong> un algorithme <em>non explicable</em> n'est PAS automatiquement biaisé. Manquer d'explainability ≥ être biaisé.</div>
+
+  <h3>Reward hacking</h3>
+  <p>Le système IA atteint un objectif <strong>au détriment d'autres</strong>. Exemple emblématique du syllabus : un système d'anesthésie chargé de  « stabiliser le patient pendant l'opération  » qui surdose tellement les patients qu'ils ne se réveillent plus correctement après. Stabilité atteinte, mais à quel prix.</p>
+
+  <h3>Transparency vs Interpretability vs Explainability</h3>
+  <p>Trois niveaux de compréhension d'un système IA — <strong>distinction extrêmement testée</strong>.</p>
+  <div class="three-col">
+    <div class="col-card transp">
+      <h4>Transparency</h4>
+      <p>À quel point on peut comprendre <strong>comment le système est conçu et implémenté</strong>.</p>
+      <p class="ex">Ex : peut-on tester sans exécuter ? Oui — il suffit de comparer la doc à l'implémentation.</p>
+    </div>
+    <div class="col-card interp">
+      <h4>Interpretability</h4>
+      <p>À quel point un humain peut <strong>comprendre la techno sous-jacente</strong> (ex: les règles d'un système expert).</p>
+      <p class="ex">Ex :  « Les médecins étaient satisfaits de l'interprétabilité du système oncologique car ils comprenaient comment les règles étaient implémentées.  »</p>
+    </div>
+    <div class="col-card explain">
+      <h4>Explainability</h4>
+      <p>Le système <strong>explique pourquoi</strong> il a pris une décision donnée. Méthode connue : <strong>LIME</strong>.</p>
+      <p class="ex">Ex :  « Pour chaque demande de prêt, l'utilisateur voit quels facteurs ont influencé la décision.  »</p>
+    </div>
+  </div>
+
+  <h3>Probabilistic + Non-deterministic = pire cas safety</h3>
+  <div class="callout warn">Pour un système safety, on veut <strong>déterministe</strong> et <strong>explicable</strong>. Les attributs <em>probabilistic</em> et <em>non-deterministic</em> sont les plus problématiques.</div>
+</section>
+
+<!-- ===== FICHE 3 ===== -->
+<section id="fiche-3" class="fiche">
+  <div class="fiche-header">
+    <div><span class="fiche-num">Ch. 3</span><h2 class="fiche-title">Machine Learning — Vue d'ensemble</h2></div>
+    <div class="fiche-meta">145 min  · 6 LO  · K2–K3</div>
+  </div>
+
+  <h3>Trois formes d'apprentissage</h3>
+  <table class="comp-table">
+    <thead><tr><th>Forme</th><th>Données</th><th>Sous-types</th><th>Exemple</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Supervised</strong></td><td>Étiquetées (input + output)</td><td>Classification (catégories), Regression (numérique)</td><td>Diagnostic depuis radios étiquetées ; prédiction d'électricité (regression)</td></tr>
+      <tr><td><strong>Unsupervised</strong></td><td>Non étiquetées</td><td>Clustering, Association</td><td>Segmentation de clients par patterns d'achat</td></tr>
+      <tr><td><strong>Reinforcement</strong></td><td>Reward function</td><td>—</td><td>Système de gestion du trafic optimisant les feux ; jeu mobile maximisant les dépenses</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Workflow ML — 12 étapes officielles</h3>
+  <div class="schema">
+    <svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Workflow ML 12 étapes">
+      <!-- Row 1 -->
+      <g>
+        <rect x="10" y="20" width="110" height="50" rx="6" fill="#fafafc" stroke="#0066cc" stroke-width="0.5"/>
+        <text x="65" y="42" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="500" fill="#1d1d1f">1. Understand</text>
+        <text x="65" y="56" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#1d1d1f">objectives</text>
+      </g>
+      <g><rect x="130" y="20" width="110" height="50" rx="6" fill="#fafafc" stroke="#0066cc" stroke-width="0.5"/>
+        <text x="185" y="42" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="500" fill="#1d1d1f">2. Select</text>
+        <text x="185" y="56" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#1d1d1f">framework</text>
+      </g>
+      <g><rect x="250" y="20" width="110" height="50" rx="6" fill="#FAECE7" stroke="#D85A30" stroke-width="0.5"/>
+        <text x="305" y="42" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="500" fill="#4A1B0C">3. Select algo /</text>
+        <text x="305" y="56" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#4A1B0C">model</text>
+      </g>
+      <g><rect x="370" y="20" width="110" height="50" rx="6" fill="#FAECE7" stroke="#D85A30" stroke-width="0.5"/>
+        <text x="425" y="42" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="500" fill="#4A1B0C">4. Prepare</text>
+        <text x="425" y="56" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#4A1B0C">data</text>
+      </g>
+      <g><rect x="490" y="20" width="110" height="50" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
+        <text x="545" y="42" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="500" fill="#04342C">5. Build &amp;</text>
+        <text x="545" y="56" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#04342C">compile model</text>
+      </g>
+      <g><rect x="610" y="20" width="100" height="50" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
+        <text x="660" y="42" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="500" fill="#04342C">6. Train</text>
+        <text x="660" y="56" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#04342C">model</text>
+      </g>
+      <!-- Arrows row 1 -->
+      <path d="M120 45 L130 45" stroke="#888780" stroke-width="0.5" marker-end="url(#arr)"/>
+      <path d="M240 45 L250 45" stroke="#888780" stroke-width="0.5" marker-end="url(#arr)"/>
+      <path d="M360 45 L370 45" stroke="#888780" stroke-width="0.5" marker-end="url(#arr)"/>
+      <path d="M480 45 L490 45" stroke="#888780" stroke-width="0.5" marker-end="url(#arr)"/>
+      <path d="M600 45 L610 45" stroke="#888780" stroke-width="0.5" marker-end="url(#arr)"/>
+      <!-- Down arrow to row 2 -->
+      <path d="M660 70 L660 100" stroke="#888780" stroke-width="0.5" marker-end="url(#arr)"/>
+      <!-- Row 2 (right to left) -->
+      <g><rect x="610" y="105" width="100" height="50" rx="6" fill="#FBEAF0" stroke="#D4537E" stroke-width="0.5"/>
+        <text x="660" y="127" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="500" fill="#4B1528">7. Evaluate</text>
+        <text x="660" y="141" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#4B1528">(validation)</text>
+      </g>
+      <g><rect x="490" y="105" width="110" height="50" rx="6" fill="#FBEAF0" stroke="#D4537E" stroke-width="0.5"/>
+        <text x="545" y="127" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="500" fill="#4B1528">8. Tune the</text>
+        <text x="545" y="141" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#4B1528">model</text>
+      </g>
+      <g><rect x="370" y="105" width="110" height="50" rx="6" fill="#FBEAF0" stroke="#D4537E" stroke-width="0.5"/>
+        <text x="425" y="127" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="500" fill="#4B1528">9. Test the</text>
+        <text x="425" y="141" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#4B1528">model (test set)</text>
+      </g>
+      <g><rect x="250" y="105" width="110" height="50" rx="6" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
+        <text x="305" y="127" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="500" fill="#412402">10. Deploy</text>
+        <text x="305" y="141" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#412402">model</text>
+      </g>
+      <g><rect x="130" y="105" width="110" height="50" rx="6" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
+        <text x="185" y="127" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="500" fill="#412402">11. Use</text>
+        <text x="185" y="141" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#412402">model</text>
+      </g>
+      <g><rect x="10" y="105" width="110" height="50" rx="6" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
+        <text x="65" y="127" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="500" fill="#412402">12. Monitor &amp;</text>
+        <text x="65" y="141" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#412402">tune</text>
+      </g>
+      <!-- Arrows row 2 right to left -->
+      <path d="M610 130 L600 130" stroke="#888780" stroke-width="0.5" marker-end="url(#arr)"/>
+      <path d="M490 130 L480 130" stroke="#888780" stroke-width="0.5" marker-end="url(#arr)"/>
+      <path d="M370 130 L360 130" stroke="#888780" stroke-width="0.5" marker-end="url(#arr)"/>
+      <path d="M250 130 L240 130" stroke="#888780" stroke-width="0.5" marker-end="url(#arr)"/>
+      <path d="M130 130 L120 130" stroke="#888780" stroke-width="0.5" marker-end="url(#arr)"/>
+      <!-- Loop back from monitor to objectives -->
+      <path d="M65 155 L65 200 L660 200 L660 240" stroke="#888780" stroke-width="0.5" stroke-dasharray="4,3" fill="none" marker-end="url(#arr)"/>
+      <text x="365" y="195" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#888780" font-style="italic">si concept drift / nouvelles données : on ré-itère</text>
+
+      <!-- Legend -->
+      <g transform="translate(10, 245)">
+        <rect width="14" height="14" fill="#fafafc" stroke="#0066cc" stroke-width="0.5" rx="2"/>
+        <text x="22" y="12" font-family="-apple-system,sans-serif" font-size="11" fill="#5f5e5a">Conception</text>
+        <rect x="120" width="14" height="14" fill="#FAECE7" stroke="#D85A30" stroke-width="0.5" rx="2"/>
+        <text x="142" y="12" font-family="-apple-system,sans-serif" font-size="11" fill="#5f5e5a">Données &amp; algorithme</text>
+        <rect x="290" width="14" height="14" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5" rx="2"/>
+        <text x="312" y="12" font-family="-apple-system,sans-serif" font-size="11" fill="#5f5e5a">Build &amp; Train</text>
+        <rect x="410" width="14" height="14" fill="#FBEAF0" stroke="#D4537E" stroke-width="0.5" rx="2"/>
+        <text x="432" y="12" font-family="-apple-system,sans-serif" font-size="11" fill="#5f5e5a">Évaluation &amp; Tuning</text>
+        <rect x="570" width="14" height="14" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5" rx="2"/>
+        <text x="592" y="12" font-family="-apple-system,sans-serif" font-size="11" fill="#5f5e5a">Production</text>
+      </g>
+
+      <defs>
+        <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#888780"/>
+        </marker>
+      </defs>
+    </svg>
+    <div class="schema-caption">Le workflow officiel ISTQB CT-AI — itératif, avec retour de la phase 12 vers la phase 1</div>
+  </div>
+
+  <div class="callout"><strong>À mémoriser pour Q.51 (set add.) :</strong>
+    <ul style="margin-top: 6px;">
+      <li> « Model created from source code  » → étape 5 <strong>Build &amp; Compile</strong></li>
+      <li> « Origin of test data identified  » +  « Critical features identified  » → étape 4 <strong>Prepare Data</strong></li>
+      <li> « Performance via validation data  » → étape 7 <strong>Evaluate Model</strong></li>
+      <li> « Performance criteria via test data  » → étape 9 <strong>Test the Model</strong></li>
+      <li> « Tuned model ready for hardware  » → étape 10 <strong>Deploy</strong></li>
+    </ul>
+  </div>
+
+  <h3>Sélection d'un algorithme — facteurs influents</h3>
+  <ul>
+    <li>Mémoire disponible (système embarqué)</li>
+    <li>Temps maxi de ré-entraînement (système embarqué médical)</li>
+    <li>Nombre de features mesurables</li>
+    <li>Nombre de clusters attendus</li>
+  </ul>
+  <div class="callout warn"><strong>Piège :</strong> la quantité de mémoire disponible <em>sur l'appareil mobile</em> n'est pas pertinente pour choisir l'algorithme d'<strong>entraînement</strong> — l'entraînement ne se fait pas sur mobile.</div>
+
+  <h3>Overfitting vs Underfitting</h3>
+  <table class="comp-table">
+    <thead><tr><th>Cas</th><th>Validation</th><th>Test indépendant</th><th>Cause</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Overfitting</strong></td><td>✓ excellent</td><td>✗ mauvais</td><td>Modèle a appris le bruit</td></tr>
+      <tr><td><strong>Underfitting</strong></td><td>✗ mauvais</td><td>✗ mauvais</td><td>Modèle trop simple</td></tr>
+      <tr><td><em>Concept drift</em></td><td>—</td><td>✗ après déploiement</td><td>Le monde change après le déploiement</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== FICHE 4 ===== -->
+<section id="fiche-4" class="fiche">
+  <div class="fiche-header">
+    <div><span class="fiche-num">Ch. 4</span><h2 class="fiche-title">ML — Données (chapitre le plus dense)</h2></div>
+    <div class="fiche-meta">230 min  · 8 LO  · K1–K2</div>
+  </div>
+
+  <h3>Les 3 datasets — JAMAIS confondre</h3>
+  <div class="schema">
+    <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Train Validation Test datasets">
+      <!-- Big dataset -->
+      <rect x="20" y="30" width="660" height="60" fill="#F1EFE8" stroke="#888780" stroke-width="0.5" rx="4"/>
+      <text x="350" y="20" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">Données collectées et préparées (jusqu'à 36 % de l'effort total !)</text>
+
+      <!-- Train -->
+      <rect x="20" y="30" width="396" height="60" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5" rx="4"/>
+      <text x="218" y="55" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" font-weight="500" fill="#04342C">Training (~60%)</text>
+      <text x="218" y="74" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#04342C">Entraîner le modèle</text>
+
+      <!-- Validation -->
+      <rect x="416" y="30" width="132" height="60" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5" rx="4"/>
+      <text x="482" y="55" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" font-weight="500" fill="#412402">Validation</text>
+      <text x="482" y="74" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#412402">~20% — Tuner</text>
+
+      <!-- Test -->
+      <rect x="548" y="30" width="132" height="60" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.5" rx="4"/>
+      <text x="614" y="55" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" font-weight="500" fill="#501313">Test (~20%)</text>
+      <text x="614" y="74" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#501313">Évaluation finale</text>
+
+      <!-- Annotations -->
+      <text x="218" y="115" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="#5f5e5a">Vu par le modèle pendant le training</text>
+      <text x="218" y="131" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="#5f5e5a">(les poids s'ajustent)</text>
+
+      <text x="482" y="115" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="#5f5e5a">Utilisé pendant l'entraînement</text>
+      <text x="482" y="131" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="#5f5e5a">pour ajuster les hyperparamètres</text>
+
+      <text x="614" y="115" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" font-weight="500" fill="#A32D2D">JAMAIS exposé pendant</text>
+      <text x="614" y="131" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" font-weight="500" fill="#A32D2D">le training !</text>
+
+      <!-- Bottom note -->
+      <rect x="20" y="160" width="660" height="46" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.5" rx="4"/>
+      <text x="40" y="180" font-family="-apple-system,sans-serif" font-size="13" font-weight="500" fill="#501313">⚠ Si le test set est exposé pendant le training (data leakage) :</text>
+      <text x="40" y="197" font-family="-apple-system,sans-serif" font-size="12" fill="#501313">les métriques d'évaluation sont biaisées et ne reflètent pas la vraie performance du modèle.</text>
+    </svg>
+  </div>
+
+  <h3>Causes de mauvaise qualité des données</h3>
+  <table class="comp-table">
+    <thead><tr><th>Problème</th><th>Symptôme</th><th>Conséquence</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Insufficient data</strong> (pour un algo précis)</td><td>L'algo X ne s'entraîne pas, alors que d'autres y arrivent</td><td>Quantité insuffisante POUR cet algo</td></tr>
+      <tr><td><strong>Wrong data</strong></td><td>Tous les algos échouent</td><td>Données erronées</td></tr>
+      <tr><td><strong>Missing data</strong></td><td>Tous les algos échouent</td><td>Champs manquants</td></tr>
+      <tr><td><strong>Badly labeled data</strong></td><td>Le modèle s'entraîne mais a une <strong>mauvaise accuracy</strong></td><td>Ground truth incorrecte</td></tr>
+      <tr><td><strong>Imbalanced / lacking diversity</strong></td><td>Le modèle s'entraîne mais produit des sorties <strong>biaisées</strong></td><td>Bias</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Approches de labeling</h3>
+  <ul>
+    <li><strong>Internal</strong> — équipe interne</li>
+    <li><strong>Outsourcing</strong> — délégué à un tiers</li>
+    <li><strong>Crowdsourcing</strong> — beaucoup de personnes (ex: Amazon Mechanical Turk)</li>
+    <li><strong>AI-based labeling</strong> — un modèle pré-existant étiquette</li>
+    <li><strong>Augmentation</strong> — transformer des données déjà étiquetées (ex: <em>rotation d'images</em>) pour en créer de nouvelles automatiquement</li>
+  </ul>
+
+  <h3>Causes typiques de mauvais labeling</h3>
+  <p>La cause la plus testée : <strong>erreurs de traduction</strong> (un label correct dans une langue devient faux après traduction automatique vers une autre).</p>
+  <div class="callout warn">Ne pas confondre data labelling avec data preparation. Et ne pas confondre la cause d'<em>insufficient data</em> avec celle de <em>poor labeling</em>.</div>
+</section>
+
+<!-- ===== FICHE 5 ===== -->
+<section id="fiche-5" class="fiche">
+  <div class="fiche-header">
+    <div><span class="fiche-num">Ch. 5</span><h2 class="fiche-title">Métriques de performance ML</h2></div>
+    <div class="fiche-meta">120 min  · 5 LO  · K2–K4</div>
+  </div>
+
+  <h3>Confusion matrix interactive</h3>
+  <p>Joue avec les valeurs ci-dessous — les métriques se recalculent en direct.</p>
+  <div class="cm-interactive">
+    <div class="cm-grid">
+      <div class="cm-cell label"></div>
+      <div class="cm-cell label">Actual Positive</div>
+      <div class="cm-cell label">Actual Negative</div>
+      <div class="cm-cell label">Predicted Pos</div>
+      <div class="cm-cell tp"><div style="font-size: 11px; opacity: 0.8;">TP</div><input type="number" id="cm-tp" value="78" min="0" oninput="recalcCM()"></div>
+      <div class="cm-cell fp"><div style="font-size: 11px; opacity: 0.8;">FP</div><input type="number" id="cm-fp" value="22" min="0" oninput="recalcCM()"></div>
+      <div class="cm-cell label">Predicted Neg</div>
+      <div class="cm-cell fn"><div style="font-size: 11px; opacity: 0.8;">FN</div><input type="number" id="cm-fn" value="6" min="0" oninput="recalcCM()"></div>
+      <div class="cm-cell tn"><div style="font-size: 11px; opacity: 0.8;">TN</div><input type="number" id="cm-tn" value="14" min="0" oninput="recalcCM()"></div>
+    </div>
+    <div class="cm-results">
+      <div class="cm-metric"><div class="cm-metric-label">Accuracy</div><div class="cm-metric-value" id="m-acc">—</div><div class="cm-formula">(TP+TN)/Total</div></div>
+      <div class="cm-metric"><div class="cm-metric-label">Precision</div><div class="cm-metric-value" id="m-prec">—</div><div class="cm-formula">TP/(TP+FP)</div></div>
+      <div class="cm-metric"><div class="cm-metric-label">Recall (Sensitivity)</div><div class="cm-metric-value" id="m-rec">—</div><div class="cm-formula">TP/(TP+FN)</div></div>
+      <div class="cm-metric"><div class="cm-metric-label">F1-score</div><div class="cm-metric-value" id="m-f1">—</div><div class="cm-formula">2 ·P ·R/(P+R)</div></div>
+      <div class="cm-metric"><div class="cm-metric-label">Specificity</div><div class="cm-metric-value" id="m-spec">—</div><div class="cm-formula">TN/(TN+FP)</div></div>
+    </div>
+  </div>
+
+  <h3>Quand utiliser quelle métrique ?</h3>
+  <table class="comp-table">
+    <thead><tr><th>Métrique</th><th>Utiliser quand⬦</th><th>Exemple syllabus</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Accuracy</strong></td><td>Classes équilibrées uniquement</td><td>À ÉVITER si déséquilibre (ex: dog hungry)</td></tr>
+      <tr><td><strong>Precision</strong></td><td>Coût d'un FAUX POSITIF élevé</td><td>KnowYourPet — chien diagnostiqué affamé alors qu'il ne l'est pas → suralimentation → maladie</td></tr>
+      <tr><td><strong>Recall</strong></td><td>Coût d'un FAUX NÉGATIF élevé</td><td>Détection de cancer — rater un cas positif est grave</td></tr>
+      <tr><td><strong>F1-score</strong></td><td>Classes déséquilibrées + Precision et Recall également importants</td><td>Compromis général</td></tr>
+      <tr><td><strong>R-squared / MSE</strong></td><td>Problème de <strong>regression</strong> (sortie numérique)</td><td>ThermalSpace — prédire la quantité d'électricité à produire</td></tr>
+      <tr><td><strong>Silhouette coefficient</strong></td><td>Évaluation de <strong>clustering</strong></td><td>Inter-cluster + intra-cluster metrics</td></tr>
+      <tr><td><strong>AUC / ROC</strong></td><td>Évaluation globale d'un classifieur (différents seuils)</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Limitations des métriques</h3>
+  <div class="callout warn"><strong>Le piège classique (Q.55) :</strong> les métriques ne sont fiables que si la <strong>ground truth est correcte</strong>. Si les labels sont mauvais, le modèle peut sembler performant en métriques tout en produisant des sorties fausses.</div>
+
+  <h3>Benchmark suites</h3>
+  <p>Les ML benchmark suites (ex: MLPerf) servent à comparer objectivement les frameworks et modèles. Ce qu'elles indiquent : <strong>training time</strong>, plus rarement le temps d'inférence. Pas de validation/test/deploy time.</p>
+</section>
+
+<!-- ===== FICHE 6 ===== -->
+<section id="fiche-6" class="fiche">
+  <div class="fiche-header">
+    <div><span class="fiche-num">Ch. 6</span><h2 class="fiche-title">Réseaux de neurones et tests</h2></div>
+    <div class="fiche-meta">65 min  · 2 LO  · K2</div>
+  </div>
+
+  <h3>Du perceptron au DNN</h3>
+  <div class="schema">
+    <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schéma DNN">
+      <text x="360" y="20" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">Deep Neural Network — couches connectées séquentiellement</text>
+
+      <!-- Input layer -->
+      <text x="80" y="50" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" font-weight="500" fill="#5f5e5a">Input</text>
+      <circle cx="80" cy="80" r="14" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+      <circle cx="80" cy="130" r="14" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+      <circle cx="80" cy="180" r="14" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+      <circle cx="80" cy="230" r="14" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+
+      <!-- Hidden layer 1 -->
+      <text x="240" y="50" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" font-weight="500" fill="#5f5e5a">Hidden 1</text>
+      <circle cx="240" cy="80" r="14" fill="#fafafc" stroke="#0066cc" stroke-width="0.5"/>
+      <circle cx="240" cy="130" r="14" fill="#fafafc" stroke="#0066cc" stroke-width="0.5"/>
+      <circle cx="240" cy="180" r="14" fill="#fafafc" stroke="#0066cc" stroke-width="0.5"/>
+      <circle cx="240" cy="230" r="14" fill="#fafafc" stroke="#0066cc" stroke-width="0.5"/>
+
+      <!-- Hidden layer 2 -->
+      <text x="400" y="50" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" font-weight="500" fill="#5f5e5a">Hidden 2</text>
+      <circle cx="400" cy="80" r="14" fill="#fafafc" stroke="#0066cc" stroke-width="0.5"/>
+      <circle cx="400" cy="130" r="14" fill="#fafafc" stroke="#0066cc" stroke-width="0.5"/>
+      <circle cx="400" cy="180" r="14" fill="#fafafc" stroke="#0066cc" stroke-width="0.5"/>
+      <circle cx="400" cy="230" r="14" fill="#fafafc" stroke="#0066cc" stroke-width="0.5"/>
+
+      <!-- Hidden layer 3 -->
+      <text x="560" y="50" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" font-weight="500" fill="#5f5e5a">Hidden 3</text>
+      <circle cx="560" cy="105" r="14" fill="#fafafc" stroke="#0066cc" stroke-width="0.5"/>
+      <circle cx="560" cy="155" r="14" fill="#fafafc" stroke="#0066cc" stroke-width="0.5"/>
+      <circle cx="560" cy="205" r="14" fill="#fafafc" stroke="#0066cc" stroke-width="0.5"/>
+
+      <!-- Output -->
+      <text x="680" y="50" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" font-weight="500" fill="#5f5e5a">Output</text>
+      <circle cx="680" cy="130" r="14" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
+      <circle cx="680" cy="180" r="14" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
+
+      <!-- Connections (subset for readability) -->
+      <g stroke="#888780" stroke-width="0.3" opacity="0.5">
+        <line x1="94" y1="80" x2="226" y2="80"/><line x1="94" y1="80" x2="226" y2="130"/><line x1="94" y1="80" x2="226" y2="180"/><line x1="94" y1="80" x2="226" y2="230"/>
+        <line x1="94" y1="130" x2="226" y2="80"/><line x1="94" y1="130" x2="226" y2="130"/><line x1="94" y1="130" x2="226" y2="180"/><line x1="94" y1="130" x2="226" y2="230"/>
+        <line x1="94" y1="180" x2="226" y2="80"/><line x1="94" y1="180" x2="226" y2="130"/><line x1="94" y1="180" x2="226" y2="180"/><line x1="94" y1="180" x2="226" y2="230"/>
+        <line x1="94" y1="230" x2="226" y2="80"/><line x1="94" y1="230" x2="226" y2="130"/><line x1="94" y1="230" x2="226" y2="180"/><line x1="94" y1="230" x2="226" y2="230"/>
+
+        <line x1="254" y1="80" x2="386" y2="80"/><line x1="254" y1="80" x2="386" y2="130"/><line x1="254" y1="80" x2="386" y2="180"/><line x1="254" y1="80" x2="386" y2="230"/>
+        <line x1="254" y1="130" x2="386" y2="80"/><line x1="254" y1="130" x2="386" y2="130"/><line x1="254" y1="130" x2="386" y2="180"/><line x1="254" y1="130" x2="386" y2="230"/>
+        <line x1="254" y1="180" x2="386" y2="80"/><line x1="254" y1="180" x2="386" y2="130"/><line x1="254" y1="180" x2="386" y2="180"/><line x1="254" y1="180" x2="386" y2="230"/>
+        <line x1="254" y1="230" x2="386" y2="80"/><line x1="254" y1="230" x2="386" y2="130"/><line x1="254" y1="230" x2="386" y2="180"/><line x1="254" y1="230" x2="386" y2="230"/>
+
+        <line x1="414" y1="80" x2="546" y2="105"/><line x1="414" y1="80" x2="546" y2="155"/><line x1="414" y1="80" x2="546" y2="205"/>
+        <line x1="414" y1="130" x2="546" y2="105"/><line x1="414" y1="130" x2="546" y2="155"/><line x1="414" y1="130" x2="546" y2="205"/>
+        <line x1="414" y1="180" x2="546" y2="105"/><line x1="414" y1="180" x2="546" y2="155"/><line x1="414" y1="180" x2="546" y2="205"/>
+        <line x1="414" y1="230" x2="546" y2="105"/><line x1="414" y1="230" x2="546" y2="155"/><line x1="414" y1="230" x2="546" y2="205"/>
+
+        <line x1="574" y1="105" x2="666" y2="130"/><line x1="574" y1="105" x2="666" y2="180"/>
+        <line x1="574" y1="155" x2="666" y2="130"/><line x1="574" y1="155" x2="666" y2="180"/>
+        <line x1="574" y1="205" x2="666" y2="130"/><line x1="574" y1="205" x2="666" y2="180"/>
+      </g>
+
+      <!-- Arrow showing forward propagation -->
+      <path d="M40 260 L680 260" stroke="#0066cc" stroke-width="0.8" marker-end="url(#arr2)"/>
+      <text x="360" y="275" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#0066cc" font-style="italic">Forward propagation : chaque neurone calcule sa valeur d'activation à partir de la couche PRÉCÉDENTE (poids – input + biais)</text>
+
+      <defs>
+        <marker id="arr2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#0066cc"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <p><strong>Définition officielle DNN :</strong>  « comprised of connected neurons where each neuron has an associated bias and each connection has an associated weight  ». Les couches ne sont connectées qu'aux <strong>couches adjacentes</strong>, pas à toutes les autres.</p>
+
+  <h3>Les 5 mesures de couverture des neurones</h3>
+  <table class="comp-table">
+    <thead><tr><th>Mesure</th><th>Définition</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Neuron coverage</strong></td><td>Proportion de neurones activés (valeur > 0) au moins une fois</td></tr>
+      <tr><td><strong>Threshold coverage</strong></td><td>Proportion de neurones avec activation &gt; <em>seuil prédéfini</em> (entre 0 et 1)</td></tr>
+      <tr><td><strong>Sign change coverage</strong></td><td>Neurones ayant produit à la fois des valeurs <strong>positives ET négatives</strong> (PAS zéro !)</td></tr>
+      <tr><td><strong>Value change coverage</strong></td><td>Neurones dont l'activation change de plus d'un montant prédéfini</td></tr>
+      <tr><td><strong>Sign-sign coverage</strong></td><td>Le changement de signe d'un neurone affecte le signe d'un neurone de la couche suivante</td></tr>
+    </tbody>
+  </table>
+  <div class="callout"><strong>Astuce mémoire :</strong> Threshold = au-dessus d'un SEUIL. Sign change = signe qui CHANGE (+ → , sans 0). Value change = valeur qui change BEAUCOUP.</div>
+</section>
+
+<!-- ===== FICHE 7 ===== -->
+<section id="fiche-7" class="fiche">
+  <div class="fiche-header">
+    <div><span class="fiche-num">Ch. 7</span><h2 class="fiche-title">Tester les systèmes IA — Vue d'ensemble</h2></div>
+    <div class="fiche-meta">115 min  · 7 LO  · K1–K4</div>
+  </div>
+
+  <h3>Spécifications IA — défis testing</h3>
+  <p>Les exigences ambiguës ou subjectives sont les plus difficiles. Exemples :</p>
+  <ul>
+    <li> « Le système doit imiter les <strong>émotions humaines</strong> d'un joueur typique  » → quasi-impossible à tester sans définir d'oracle.</li>
+    <li> « Plus précis que le système précédent  » → testable.</li>
+    <li> « 100 % d'accuracy  » → testable mais difficile à atteindre.</li>
+    <li> « Override en 1 seconde  » → testable normalement.</li>
+  </ul>
+
+  <h3>Niveaux de test pour systèmes IA</h3>
+  <ol>
+    <li><strong>Input data testing</strong> — vérifier la qualité, le bias, la complétude des données <em>avant</em> entraînement</li>
+    <li><strong>ML model testing</strong> — métriques de performance + tests adversariaux du modèle seul</li>
+    <li><strong>Component testing</strong> — composants non-IA (conventionnel)</li>
+    <li><strong>Integration testing</strong> — interaction modèle → composants conventionnels</li>
+    <li><strong>System testing</strong> — vue d'ensemble (peut inclure tests de bias, de scalabilité, etc.)</li>
+    <li><strong>Acceptance testing</strong> — critères utilisateurs</li>
+  </ol>
+  <div class="callout"><strong>Bias-related testing</strong> → niveau le plus efficace : <strong>Input data testing</strong> (idéalement avant l'entraînement).</div>
+
+  <h3>Test data — défis spécifiques</h3>
+  <ul>
+    <li><strong>Big data à haute vélocité</strong> — difficile à sourcer (Q.23)</li>
+    <li>Sourcer cohérence de plusieurs sources, OK</li>
+    <li>Sourcer du web public, OK</li>
+    <li>Sourcer indépendamment des data scientists est une <strong>bonne pratique</strong></li>
+  </ul>
+
+  <h3>Automation bias</h3>
+  <p>Tendance humaine à <strong>trop faire confiance</strong> aux recommandations d'un système automatisé. Conséquence importante pour le test : les décisions humaines <em>assistées par IA</em> peuvent être de qualité inférieure aux décisions humaines seules. C'est pourquoi on doit aussi tester l'<strong>accuracy des décisions humaines</strong> dans la boucle (Q.24).</p>
+
+  <h3>Documentation d'un composant IA</h3>
+  <ul>
+    <li>Inclut les non-fonctionnels → permet le non-functional testing</li>
+    <li>Documenter les interfaces → <strong>permet</strong> le white-box testing des interactions</li>
+    <li>Documenter la <strong>source des données + leurs metadata</strong> → permet de tester pour le bias</li>
+    <li>Les self-adapting systems documentent rarement chaque changement (Q.58)</li>
+  </ul>
+
+  <h3>Concept drift en production</h3>
+  <p><strong>Définition :</strong> changement post-déploiement dans les distributions ou relations sous-jacentes des données, dégradant la performance du modèle.</p>
+  <p><strong>Cas typique :</strong> e-commerce — le taux de conversion des recommandations baisse parce que le comportement client a changé (nouveaux produits tendance, saisonnalité, événements externes).</p>
+
+  <h3>Choix d'une combinaison de tests système (Q.25 — toll plaza)</h3>
+  <div class="callout success">Quand l'exigence dit <strong> « vulnerabilities  »</strong> → adversarial testing. Quand les inputs varient en formats/résolutions → data pipeline testing. Quand les systèmes sont indépendants → pas de scalability. Pas de discrimination positive → pas de fairness testing.</div>
+</section>
+
+<!-- ===== FICHE 8 ===== -->
+<section id="fiche-8" class="fiche">
+  <div class="fiche-header">
+    <div><span class="fiche-num">Ch. 8</span><h2 class="fiche-title">Caractéristiques qualité spécifiques IA</h2></div>
+    <div class="fiche-meta">150 min  · 8 LO  · K2–K4</div>
+  </div>
+
+  <h3>Self-learning systems</h3>
+  <div class="callout warn"><strong>Défi unique :</strong> des tests qui passaient peuvent ÉCHOUER après que le système se soit auto-modifié. Ce n'est pas une régression de release ni un bug — le système a changé tout seul.</div>
+  <p>Distinguer self-learning de :</p>
+  <ul>
+    <li>Un système nécessitant un ré-entraînement manuel régulier (= n'est PAS self-learning)</li>
+    <li>Un système avec releases régulières (= n'est PAS self-learning)</li>
+  </ul>
+
+  <h3>Tester l'autonomy</h3>
+  <p>Test pertinent : <strong>tester sur une période prolongée</strong> pour observer la fréquence des interventions humaines. Pas l'accuracy, ni l'adaptabilité, ni l'analyse statique des données.</p>
+
+  <h3>Tester pour le bias — ce qui est utile</h3>
+  <table class="comp-table">
+    <thead><tr><th>✓ Utile</th><th>✗ Pas utile</th></tr></thead>
+    <tbody>
+      <tr><td>Mesurer comment des variations d'inputs changent les outputs</td><td>Impliquer des utilisateurs sélectionnés <strong>connus pour être biaisés</strong></td></tr>
+      <tr><td>Observer les corrélations en production</td><td></td></tr>
+      <tr><td>Obtenir des données de sources alternatives</td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Probabilistic + Non-deterministic</h3>
+  <p><strong>Non-deterministic</strong> : mêmes inputs + même état → outputs potentiellement différents. <strong>Conséquence test :</strong> exécutions multiples requises pour validité statistique.</p>
+  <ul>
+    <li>On peut quand même définir des résultats attendus (avec tolérance)</li>
+    <li>Non-déterministe ≥ pas explicable (Q.61)</li>
+    <li>Pas de corrélation systématique entre bias et non-déterminisme</li>
+  </ul>
+
+  <h3>Test oracle problem</h3>
+  <div class="callout"><strong>Cause typique (Q.63) :</strong> la <strong>ground truth</strong> de la prédiction est inconnue.<br>Pas la cause : autonomie du système, source des données inconnue, manque de transparency.</div>
+  <p><strong>Solution principale : pseudo-oracle</strong> via back-to-back testing avec un système alternatif (non-IA équivalent, version open source).</p>
+
+  <h3>Caractéristiques testables sans dynamic testing</h3>
+  <p>De ces 4 attributs (DNN context), seul un peut être évalué <strong>sans exécuter</strong> le système :</p>
+  <ul>
+    <li>Explainability — exécution requise</li>
+    <li><strong>Transparency — comparaison doc → implémentation, PAS d'exécution requise ✓</strong></li>
+    <li>Automation bias — exécution + utilisateurs requis</li>
+    <li>Accuracy — exécution requise</li>
+  </ul>
+
+  <h3>Attributs à scruter pour critères d'acceptance (Q.29)</h3>
+  <p>Cas du système ministère santé entraîné sur 5 000 hommes &gt;50 ans + 25 000 femmes &gt;30 ans :</p>
+  <ul>
+    <li><strong>Bias</strong> ✓ (déséquilibre 25k/5k + tranches d'âge différentes)</li>
+    <li><strong>Explainability</strong> ✓ (impact médical/financier sur les patients identifiés comme vulnérables)</li>
+    <li>Adaptability, Flexibility, Autonomy — pas spécialement pertinents ici</li>
+  </ul>
+</section>
+
+<!-- ===== FICHE 9 ===== -->
+<section id="fiche-9" class="fiche">
+  <div class="fiche-header">
+    <div><span class="fiche-num">Ch. 9</span><h2 class="fiche-title">Méthodes &amp; Techniques de test</h2></div>
+    <div class="fiche-meta">245 min  · 7 LO  · K2–K4 — chapitre clé !</div>
+  </div>
+
+  <h3>Catalogue des techniques</h3>
+  <div class="technique-deck">
+    <div class="tech-card">
+      <h5>Adversarial testing</h5>
+      <div>Trouver entrées exploitables ET ré-entraîner pour les rendre inoffensives.</div>
+      <div class="when">Quand : "vulnerabilities", "malicious inputs"</div>
+      <div class="ex">Toll plaza, système juridique LAIgal</div>
+    </div>
+    <div class="tech-card">
+      <h5>Pairwise testing</h5>
+      <div>Couvrir toutes les paires de paramètres (≥ que toutes les combinaisons).</div>
+      <div class="when">Quand : grand nombre de paramètres (&gt;50 conditions – 7 fonctions)</div>
+      <div class="ex">Vehicule autonome — environnements – fonctions</div>
+    </div>
+    <div class="tech-card">
+      <h5>Back-to-back testing</h5>
+      <div>SUT vs <strong>pseudo-oracle</strong> (système alternatif, ex: non-IA équivalent ou open-source).</div>
+      <div class="when">Quand : pas d'oracle clair</div>
+      <div class="ex">Système juridique LAIgal vs open source équivalent</div>
+    </div>
+    <div class="tech-card">
+      <h5>A/B testing</h5>
+      <div>Compare DEUX VARIANTES du <strong>même</strong> SUT pour décider laquelle est meilleure.</div>
+      <div class="when">Quand : choix entre 2 versions du modèle</div>
+      <div class="ex">Modèle v1 vs v2</div>
+    </div>
+    <div class="tech-card">
+      <h5>Metamorphic testing (MT)</h5>
+      <div>Pas besoin de la sortie exacte ; juste la <strong>relation</strong> entre source &amp; follow-up cases.</div>
+      <div class="when">Quand : oracle indisponible mais des relations connues</div>
+      <div class="ex">SnapHappy/ClickNow — recommandations</div>
+    </div>
+    <div class="tech-card">
+      <h5>Exploratory testing</h5>
+      <div>Design + exécution simultanés. En IA : <strong>EDA</strong> (Exploratory Data Analysis) sur les données d'entraînement.</div>
+      <div class="when">Quand : besoin de compréhension préalable</div>
+      <div class="ex">Visualiser la distribution des labels avant entraînement</div>
+    </div>
+  </div>
+
+  <h3>Differential testing — un mot piège</h3>
+  <div class="callout warn"><strong>Differential testing = Back-to-back testing</strong>, PAS A/B testing. Q.64 du set add. teste cette confusion.</div>
+
+  <h3>Metamorphic testing — exemple syllabus (Q.33)</h3>
+  <p>Source test case : recherche de téléphones dans la fourchette $200–$300, 3D camera = "don't care" → résultats : SnapHappy_X1, SnapHappy_M2, SnapHappy_M3, ClickNow_1000x, ClickNow_1000xs.</p>
+  <p>Follow-up T1 : ajouter contrainte 3D camera = yes (plus stricte) → résultats `  source.<br>
+  Follow-up T2 : ajouter contrainte 3D camera = no (plus stricte) → résultats `  source.<br>
+  <strong>Métamorphic relation :</strong> T1 ∪ T2 = source set, et T1 ∩ T2 = & (puisque la contrainte est binaire).</p>
+  <div class="schema">
+    <svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Metamorphic relation">
+      <text x="350" y="20" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">Relation métamorphique : T1 ∪ T2 = Source  · T1 ∩ T2 = &</text>
+
+      <!-- Source -->
+      <rect x="270" y="40" width="160" height="60" rx="8" fill="#F1EFE8" stroke="#5f5e5a" stroke-width="0.5"/>
+      <text x="350" y="62" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">Source test case</text>
+      <text x="350" y="78" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#5f5e5a">5 phones, 3D = don't care</text>
+      <text x="350" y="92" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#5f5e5a">{X1, M2, M3, 1000x, 1000xs}</text>
+
+      <!-- T1 -->
+      <rect x="40" y="130" width="280" height="50" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
+      <text x="180" y="150" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" font-weight="500" fill="#04342C">T1 : 3D = yes (plus strict)</text>
+      <text x="180" y="166" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#04342C">→ {M2, M3, 1000xs} (3 phones avec 3D)</text>
+
+      <!-- T2 -->
+      <rect x="380" y="130" width="280" height="50" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
+      <text x="520" y="150" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" font-weight="500" fill="#412402">T2 : 3D = no (plus strict)</text>
+      <text x="520" y="166" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#412402">→ {X1, 1000x} (2 phones sans 3D)</text>
+
+      <!-- Arrows -->
+      <path d="M310 100 L195 130" stroke="#888780" stroke-width="0.5" marker-end="url(#arr3)"/>
+      <path d="M390 100 L505 130" stroke="#888780" stroke-width="0.5" marker-end="url(#arr3)"/>
+
+      <defs>
+        <marker id="arr3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#888780"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <h3>Exploratory testing en contexte IA</h3>
+  <ul>
+    <li>EDA = Exploratory Data Analysis = visualiser la training data sous différents angles</li>
+    <li>NE PAS confondre avec : tests scriptés (equivalence partitioning) / checklist (Google ML test) / calcul de métriques</li>
+  </ul>
+</section>
+
+<!-- ===== FICHE 10 ===== -->
+<section id="fiche-10" class="fiche">
+  <div class="fiche-header">
+    <div><span class="fiche-num">Ch. 10</span><h2 class="fiche-title">Environnements de test</h2></div>
+    <div class="fiche-meta">30 min  · 2 LO  · K2 — court mais souvent piégeux</div>
+  </div>
+
+  <h3>Différence env IA vs conventionnel</h3>
+  <div class="callout"><strong>Vraie différence (Q.36) :</strong> les environnements IA peuvent nécessiter un <strong>mécanisme d'explainability</strong>.<br>
+  Fausses différences (à NE PAS choisir) :
+  <ul style="margin-top: 6px;">
+    <li> « Simulateurs et virtual envs  » — utilisés aussi en conventionnel (jeux, simulation)</li>
+    <li> « Beaucoup de données  » — beaucoup de systèmes conventionnels en utilisent aussi</li>
+    <li> « GPU requis  » — utilisés aussi pour les jeux, le rendu 3D, etc.</li>
+  </ul></div>
+
+  <h3>Bénéfices des virtual environments</h3>
+  <table class="comp-table">
+    <thead><tr><th>Cas d'usage</th><th>Bénéfice</th></tr></thead>
+    <tbody>
+      <tr><td>Smart city — gestion de foule pour le Nouvel An</td><td>Tester scénarios <strong>rares</strong></td></tr>
+      <tr><td>Système de trading sur marché monétaire</td><td>Tester sans <strong>perdre de l'argent</strong> réel</td></tr>
+      <tr><td>Voiture autonome</td><td>Tester scénarios <strong>dangereux</strong> en sécurité</td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn"><strong>Cas où le virtuel n'est PAS un bon choix (Q.65) :</strong> Smart fruit picker — l'évaluation des dégâts physiques sur les fruits est <strong>plus difficile</strong> en virtuel qu'en réel. Quand l'évaluation physique sensible est nécessaire, le virtuel atteint sa limite.</div>
+</section>
+
+<!-- ===== FICHE 11 ===== -->
+<section id="fiche-11" class="fiche">
+  <div class="fiche-header">
+    <div><span class="fiche-num">Ch. 11</span><h2 class="fiche-title">L'IA pour le test</h2></div>
+    <div class="fiche-meta">195 min  · 6 LO  · K2</div>
+  </div>
+
+  <h3>Les 4 catégories d'AI software engineering</h3>
+  <table class="comp-table">
+    <thead><tr><th>Catégorie</th><th>Usage en testing</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Classification, Learning &amp; Prediction</strong></td><td>Reconnaissance d'objets dans GUIs (visual testing). C'est la techno derrière l'image recognition pour l'automatisation UI.</td></tr>
+      <tr><td><strong>Probabilistic SE</strong></td><td>Estimer la probabilité d'événements (ex: défaut probable)</td></tr>
+      <tr><td><strong>Search-based SE</strong></td><td>Réduire un grand espace de recherche (ex: génération de tests)</td></tr>
+      <tr><td><strong>Bayesian techniques</strong></td><td>Inférence bayésienne, modèles probabilistes</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Defect categorization avec IA</h3>
+  <p><strong>Optimal :</strong> grand nombre de défauts sur petite application — bénéfice + opportunité de détecter doublons (Q.37).</p>
+  <p><strong>Non optimal :</strong> peu de défauts (pas assez de training data) ; minimal data dans les rapports (peu d'info pour l'algo) ; nouvelle équipe sans historique.</p>
+
+  <h3>Test case generation avec IA</h3>
+  <p><strong>Source idéale :</strong> <strong>web server logs</strong> (machine-readable + reflètent l'usage réel).</p>
+  <p>Sources moins adaptées : test charters (texte libre pour exploratory), images de flow chart (pas machine-readable), crash reports (failures, pas fonctions).</p>
+
+  <h3>Optimisation de la régression</h3>
+  <p>Méthode : <strong>analyser l'historique des exécutions de tests</strong> pour réduire la suite, prioriser ou augmenter (section 11.4 syllabus).</p>
+  <div class="callout warn">Pas par : analyse des faux positifs ; algos génétiques pour créer de nouveaux tests ; mise à jour des résultats attendus contre concept drift.</div>
+
+  <h3>Defect prediction</h3>
+  <p><strong>Méthode :</strong> chercher des corrélations entre mesures <strong>code/process/people</strong> et défauts sur le même code base ou un similaire.</p>
+  <div class="callout warn"><strong>NE PAS confondre avec :</strong>
+    <ul style="margin-top: 6px;">
+      <li>NLP demandant aux développeurs (pas du predict)</li>
+      <li>Analyse des faux positifs (sans intérêt prédictif)</li>
+      <li>Scanner du code avec des règles → c'est de l'<strong>analyse statique</strong>, pas du defect prediction</li>
+    </ul>
+  </div>
+
+  <h3>Visual testing</h3>
+  <table class="comp-table">
+    <thead><tr><th>✓ Vrai</th><th>✗ Faux</th></tr></thead>
+    <tbody>
+      <tr><td>Utilise des images via IA pour comparer</td><td>Utilise des object IDs</td></tr>
+      <tr><td>Détecte les éléments UI superposés</td><td>Fait du pixel-par-pixel</td></tr>
+      <tr><td>Robuste aux changements de layout</td><td>Échoue dès que le layout change</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<div style="text-align: center; margin: 40px 0; color: var(--text-tertiary); font-size: 13px;">
+  Bonne préparation ! Reviens au <a href="index.html" style="color: var(--accent);">hub</a> pour suivre ton plan ou lancer un examen blanc.
+</div>
+
+</div>
+
+<script>
+  // Confusion matrix interactive
+  function recalcCM() {
+    const tp = +document.getElementById('cm-tp').value || 0;
+    const fp = +document.getElementById('cm-fp').value || 0;
+    const fn = +document.getElementById('cm-fn').value || 0;
+    const tn = +document.getElementById('cm-tn').value || 0;
+    const total = tp+fp+fn+tn;
+    const acc = total ? (tp+tn)/total : 0;
+    const prec = (tp+fp) ? tp/(tp+fp) : 0;
+    const rec = (tp+fn) ? tp/(tp+fn) : 0;
+    const f1 = (prec+rec) ? 2*prec*rec/(prec+rec) : 0;
+    const spec = (tn+fp) ? tn/(tn+fp) : 0;
+    const fmt = v => total ? (v*100).toFixed(1) + '%' : '—';
+    document.getElementById('m-acc').textContent = fmt(acc);
+    document.getElementById('m-prec').textContent = fmt(prec);
+    document.getElementById('m-rec').textContent = fmt(rec);
+    document.getElementById('m-f1').textContent = fmt(f1);
+    document.getElementById('m-spec').textContent = fmt(spec);
+  }
+  recalcCM();
+
+  // Smooth scroll for TOC
+  document.querySelectorAll('.toc-list a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+<script type="module" src="motion-animations.js"></script>
+</body>
+</html>
+
